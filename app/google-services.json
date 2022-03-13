@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "621440407437",
+    "project_id": "simplenotepad-d92b6",
+    "storage_bucket": "simplenotepad-d92b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:621440407437:android:e6f6982faf0d26fc02cfc4",
+        "android_client_info": {
+          "package_name": "com.daud.simplenotepad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "621440407437-kngv5l6k9o0bme20grm6tssdte7abvpq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daud.simplenotepad",
+            "certificate_hash": "7ee44c13d61c3e74bc3d3f5d9c85c88245f12a5a"
+          }
+        },
+        {
+          "client_id": "621440407437-17hkcvj3tp2djhm8t95ctdsiucb8u9c6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9xRX_Uh1AQ9PPU6ysjBh_zLy17vqcw2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "621440407437-17hkcvj3tp2djhm8t95ctdsiucb8u9c6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
