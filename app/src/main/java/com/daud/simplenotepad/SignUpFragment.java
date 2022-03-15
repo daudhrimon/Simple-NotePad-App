@@ -101,7 +101,7 @@ public class SignUpFragment extends Fragment {
                     profileMAp.put("Name",nameIn);
                     profileMAp.put("Email",emailIn);
                     profileMAp.put("userId",userId);
-                    profileRef.setValue(passwordIN).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    profileRef.setValue(profileMAp).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()){

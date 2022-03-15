@@ -35,7 +35,7 @@ public class SignInFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private ProgressBar progress;
-    private String currentUser = "User";
+    private String userName = "User";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -100,15 +100,18 @@ public class SignInFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     String userId = firebaseAuth.getCurrentUser().getUid();
-                    DatabaseReference dataRef = databaseReference.child(userId).child("Name");
+                    DatabaseReference dataRef = databaseReference.child(userId).child("Profile").child("Name");
                     dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()){
-                                currentUser = snapshot.getValue(String.class);
+                                userName = snapshot.getValue(String.class);
                             }else{
-                                currentUser = "User";
+                                userName = "User";
                             }
+                            editor.putString("userId",userId);
+                            editor.putString("userName",userName);
+                            editor.commit();
                             progress.setVisibility(View.INVISIBLE);
 
                             //AlertDialog
@@ -121,7 +124,7 @@ public class SignInFragment extends Fragment {
                             MaterialButton yesBtn = alertView.findViewById(R.id.yesBtn);
                             MaterialButton noBtn = alertView.findViewById(R.id.noBtn);
                             //Set currentUsers Name
-                            userNameTv.setText(currentUser);
+                            userNameTv.setText(userName);
 
                             //yesBtn OnClick
                             yesBtn.setOnClickListener(view2 -> {

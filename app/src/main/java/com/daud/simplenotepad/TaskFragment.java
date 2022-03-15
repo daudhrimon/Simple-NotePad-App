@@ -30,7 +30,8 @@ public class TaskFragment extends Fragment {
     private ImageButton backIBtn,saveIBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    private String currentUser = "User";
+    private String userName = "User";
+    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +54,7 @@ public class TaskFragment extends Fragment {
             String titleIn = titleEt.getText().toString();
             String noteIn = noteEt.getText().toString();
             if (titleIn.isEmpty()){
-                Toast.makeText(getContext(), "Dear "+currentUser+" You Can't Save a Note Without Title", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Dear "+ userName +" You Can't Save a Note Without Title", Toast.LENGTH_SHORT).show();
             }else{
                 PushNoteToFirebase(titleIn,noteIn);
             }
@@ -96,7 +97,7 @@ public class TaskFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
-                    Toast.makeText(getContext(), "Dear..."+currentUser+" Your Note Saved Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Dear..."+ userName +" Your Note Saved Successfully", Toast.LENGTH_SHORT).show();
                     getParentFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.fade_in,R.anim.slide_out_left_to_right)
                             .replace(R.id.FrameLay,new HomeFragment()).commit();
@@ -115,9 +116,9 @@ public class TaskFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()){
-                    currentUser = snapshot.getValue(String.class);
+                    userName = snapshot.getValue(String.class);
                 }else {
-                    currentUser = "User";
+                    userName = "User";
                 }
             }
 

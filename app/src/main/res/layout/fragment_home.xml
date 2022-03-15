@@ -15,13 +15,19 @@
 
     </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerV"
-        android:layout_below="@id/homeToolBar"
-        android:layout_above="@id/bottomNav"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"/>
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomNav"
+        android:layout_below="@id/homeToolBar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            />
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
@@ -33,6 +39,7 @@
         android:backgroundTint="#FFF"
         android:src="@drawable/plus"
         app:borderWidth="5dp" />
+
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"

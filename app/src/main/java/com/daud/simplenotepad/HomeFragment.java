@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton addBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    List<NotesModel> list;
+    private List<NotesModel> list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
 
         String userId = firebaseAuth.getCurrentUser().getUid();
 
-        DatabaseReference dataRef = databaseReference.child("AllUsersNote").child(userId).child("Notes");
+        DatabaseReference dataRef = databaseReference.child(userId).child("Notes");
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -59,11 +59,6 @@ public class HomeFragment extends Fragment {
 
             }
         });
-
-
-
-
-
 
         addBtn.setOnClickListener(view1 -> {
 
