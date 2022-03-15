@@ -10,7 +10,7 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#30000000"
+        android:background="@color/browser_actions_divider_color"
         android:orientation="horizontal">
 
         <ImageButton
@@ -40,8 +40,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_above="@+id/bottomNav"
-        android:layout_below="@id/toolBar">
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/toolBar"
+        android:padding="5dp">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -116,14 +117,4 @@
 
     </LinearLayout>
 
-
-
-    <LinearLayout
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-    </LinearLayout>
 </RelativeLayout>
