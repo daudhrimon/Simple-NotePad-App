@@ -88,19 +88,20 @@ public class SignUpFragment extends Fragment {
     }
 
     //SignUpBtnAuth
-    private void SignUpBtnAuth(String nameInSup, String emailInSup, String passwordInSup) {
+    private void SignUpBtnAuth(String nameIn, String emailIn, String passwordIN) {
         //FirebaseAuth
         progress.setVisibility(View.VISIBLE);
-        firebaseAuth.createUserWithEmailAndPassword(emailInSup,passwordInSup).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(emailIn,passwordIN).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     String userId = firebaseAuth.getCurrentUser().getUid();
-                    DatabaseReference dataRef = databaseReference.child("AllUsersNote").child(userId);
-                    HashMap<String,Object> value = new HashMap<>();
-                    value.put("Name",nameInSup);
-                    value.put("Notes","");
-                    dataRef.setValue(value).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    DatabaseReference profileRef = databaseReference.child("AllUsersNote").child(userId).child("Profile");
+                    HashMap<String,Object> profileMAp = new HashMap<>();
+                    profileMAp.put("Name",nameIn);
+                    profileMAp.put("Email",emailIn);
+                    profileMAp.put("userId",userId);
+                    profileRef.setValue(passwordIN).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isComplete()){

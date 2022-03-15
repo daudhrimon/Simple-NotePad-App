@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,13 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.security.Key;
 import java.util.HashMap;
-import java.util.Map;
 
 public class TaskFragment extends Fragment {
-    private TextInputEditText titleEt,bodyEt;
-    private TextView titleTv,bodyTv;
+    private TextInputEditText titleEt, noteEt;
+    private TextView titleTv, noteTv;
     private ImageButton backIBtn,saveIBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
@@ -54,11 +51,11 @@ public class TaskFragment extends Fragment {
         //saveBtn OnClick
         saveIBtn.setOnClickListener(view1 -> {
             String titleIn = titleEt.getText().toString();
-            String bodyIn = bodyEt.getText().toString();
+            String noteIn = noteEt.getText().toString();
             if (titleIn.isEmpty()){
                 Toast.makeText(getContext(), "Dear "+currentUser+" You Can't Save a Note Without Title", Toast.LENGTH_SHORT).show();
             }else{
-                PushNoteToFirebase(titleIn,bodyIn);
+                PushNoteToFirebase(titleIn,noteIn);
             }
         });
 
@@ -77,9 +74,9 @@ public class TaskFragment extends Fragment {
     //initialization
     private void initial(View view) {
         titleEt = view.findViewById(R.id.titleEt);
-        bodyEt = view.findViewById(R.id.bodyEt);
+        noteEt = view.findViewById(R.id.noteEt);
         titleTv = view.findViewById(R.id.titleTv);
-        bodyTv = view.findViewById(R.id.bodyTv);
+        noteTv = view.findViewById(R.id.noteTv);
         backIBtn = view.findViewById(R.id.backIBtn);
         saveIBtn = view.findViewById(R.id.saveIBtn);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -87,13 +84,13 @@ public class TaskFragment extends Fragment {
     }
 
     //Push Note To Firebase Method
-    private void PushNoteToFirebase(String titleIn, String bodyIn) {
+    private void PushNoteToFirebase(String titleIn, String noteIn) {
         String userId = firebaseAuth.getCurrentUser().getUid();
         DatabaseReference pushDataRef = databaseReference.child(userId).child("Notes").push();
         String pushKey = pushDataRef.getKey().toString();
         HashMap<String,Object> noteMap = new HashMap<>();
         noteMap.put("Title",titleIn);
-        noteMap.put("Body",bodyIn);
+        noteMap.put("Note",noteIn);
         noteMap.put("Key",pushKey);
         pushDataRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -113,7 +110,7 @@ public class TaskFragment extends Fragment {
     //getCurrentUser Method
     private void getCurrentUser() {
         String userId = firebaseAuth.getCurrentUser().getUid();
-        DatabaseReference currentUserRef = databaseReference.child(userId).child("Name");
+        DatabaseReference currentUserRef = databaseReference.child(userId).child("Profile").child("Name");
         currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

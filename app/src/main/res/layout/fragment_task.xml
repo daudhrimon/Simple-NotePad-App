@@ -81,21 +81,21 @@
                     />
 
                 <TextView
-                    android:id="@+id/bodyTv"
+                    android:id="@+id/noteTv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Body"
+                    android:text="Note"
                     android:padding="5dp"
                     android:textColor="#000000"
                     android:textSize="20dp"
                     android:visibility="gone" />
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/bodyEt"
+                    android:id="@+id/noteEt"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
@@ -104,7 +104,7 @@
                     android:layout_marginBottom="5dp"
                     android:padding="5dp"
                     android:background="#FFFFFF"
-                    android:hint="Body"
+                    android:hint="Note"
                     android:gravity="top"
                     android:textColor="#000000"
                     android:minHeight="300dp"
