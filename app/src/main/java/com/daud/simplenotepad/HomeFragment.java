@@ -13,8 +13,11 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +28,7 @@ public class HomeFragment extends Fragment {
     private FloatingActionButton addBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    //private List<NotesModel> list;
+    List<NotesModel> list;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,23 +40,25 @@ public class HomeFragment extends Fragment {
 
         String userId = firebaseAuth.getCurrentUser().getUid();
 
-        /*DatabaseReference dataRef = databaseReference.child("AllUsersNote").child(userId).child("Notes");
+        DatabaseReference dataRef = databaseReference.child("AllUsersNote").child(userId).child("Notes");
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                list.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()){
                     if (dataSnapshot.exists()){
-
+                        NotesModel notesModel = dataSnapshot.getValue(NotesModel.class);
+                        list.add(notesModel);
                     }
                 }
+                recyclerV.setAdapter(new NotesAdapter(getContext(),list));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });*/
-
+        });
 
 
 
@@ -79,6 +84,6 @@ public class HomeFragment extends Fragment {
         recyclerV.setLayoutManager(new GridLayoutManager(getContext(),2));
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
-        //list = new ArrayList<>();
+        list = new ArrayList<>();
     }
 }

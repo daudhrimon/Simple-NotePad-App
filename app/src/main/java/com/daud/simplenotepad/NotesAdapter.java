@@ -13,7 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
-    ///////////////////////
+    private Context context;
+    private List<NotesModel> list;
+
+    public NotesAdapter(Context context, List<NotesModel> list) {
+        this.context = context;
+        this.list = list;
+    }
 
     @NonNull
     @Override
@@ -24,6 +30,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
 
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
+
 
     }
 
