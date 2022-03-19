@@ -117,12 +117,11 @@ public class SignInFragment extends Fragment {
                             //AlertDialog
                             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
                             View alertView = LayoutInflater.from(getContext()).inflate(R.layout.save_pass_layout,null);
-                            alertDialog.setView(alertView);
-
-                            //initial alertView Components
+                            //initialize alertView Components
                             TextView userNameTv = alertView.findViewById(R.id.userNameTv);
                             MaterialButton yesBtn = alertView.findViewById(R.id.yesBtn);
                             MaterialButton noBtn = alertView.findViewById(R.id.noBtn);
+                            alertDialog.setView(alertView);
                             //Set currentUsers Name
                             userNameTv.setText(userName);
 

@@ -5,17 +5,28 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AlertDialogLayout;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.print.PrintAttributes;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,8 +37,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class HomeFragment extends Fragment {
-    private ImageButton menuIb;
+    private CircleImageView profileTb;
     private SearchView searchView;
     private RecyclerView recyclerV;
     private FloatingActionButton addBtn;
@@ -39,6 +52,7 @@ public class HomeFragment extends Fragment {
     public static String userId;
     public static String userName;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,13 +60,10 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         // initialize
         initial(view);
-
-         // Show Data RecyclerView
+        // Show Data RecyclerView
         ShowAllNotes();
-
         //Get User Name
         getUserName();
-
         //Plus Fab OnClick
         addBtn.setOnClickListener(view1 -> {
 
@@ -61,12 +72,18 @@ public class HomeFragment extends Fragment {
                     R.anim.fade_in,
                     R.anim.slide_out_right_bottom).replace(R.id.FrameLay,new TaskFragment()).addToBackStack(null).commit();
         });
+        // Profile ToolBar CircleImageView OnClick
+        profileTb.setOnClickListener(view1 -> {
+            profileTbOnClick();
+        });
 
         return view;
     }
 
+
+
     private void initial(View view) {
-        menuIb = view.findViewById(R.id.menuIb);
+        profileTb = view.findViewById(R.id.profileTb);
         recyclerV = view.findViewById(R.id.recyclerV);
         addBtn = view.findViewById(R.id.addBtn);
         recyclerV = view.findViewById(R.id.recyclerV);
@@ -119,5 +136,30 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+
+    // Profile ToolBar CircleImageView OnClick
+    private void profileTbOnClick() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        View alertView = LayoutInflater.from(getContext()).inflate(R.layout.profile_layout,null);
+        //initialize alertView Components
+        CircleImageView profileCiv = alertView.findViewById(R.id.profileCiv);
+        TextView nameTv = alertView.findViewById(R.id.nameTv);
+        MaterialButton settingsFab = alertView.findViewById(R.id.settingsFab);
+        MaterialButton signOutFab = alertView.findViewById(R.id.signOutFab);
+        ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
+        alertDialog.setView(alertView);
+
+        cancelIb.setOnClickListener(view -> {
+            alertDialog.dismiss();
+        });
+
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+        Window window = alertDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.TOP;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
     }
 }
