@@ -10,24 +10,40 @@
         android:id="@+id/homeToolBar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/browser_actions_divider_color"
-        android:orientation="horizontal">
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="11dp"
+        android:background="@drawable/search_bg">
+
+        <androidx.appcompat.widget.SearchView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toStartOf="@+id/menuIb" />
+
+        <ImageButton
+            android:id="@+id/menuIb"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="11dp"
+            android:src="@drawable/ic_baseline_menu_24"
+            tools:ignore="SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
 
     </RelativeLayout>
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerV"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/bottomNav"
-        android:layout_below="@id/homeToolBar">
+        android:layout_below="@id/homeToolBar"
+        android:padding="7dp" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerV"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="7dp"
-            />
-    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBtn"
@@ -35,11 +51,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
         android:backgroundTint="#FFF"
         android:src="@drawable/plus"
         app:borderWidth="5dp"
-        app:fabCustomSize="60dp"/>
+        app:fabCustomSize="60dp"
+        tools:ignore="SpeakableTextPresentCheck" />
 
     <LinearLayout
         android:id="@+id/bottomNav"

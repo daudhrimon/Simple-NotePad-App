@@ -1,9 +1,13 @@
 package com.daud.simplenotepad;
 
+import static com.daud.simplenotepad.HomeFragment.userId;
+import static com.daud.simplenotepad.HomeFragment.userName;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,8 +34,6 @@ public class TaskFragment extends Fragment {
     private ImageButton backIBtn,saveIBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    private String userName = "User";
-    private String userId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,14 +42,7 @@ public class TaskFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_task, container, false);
         //initialization
         initial(view);
-        /*Bundle bundle = this.getArguments();
-       if (bundle != null){
-           String state = bundle.getString("State");
-           titleEt.setHint("BODY");
-       }*/
-
-        //getCurrentUser
-        getCurrentUser();
+        /////////////////////////////////////////////////////////////////////////////////
 
         //saveBtn OnClick
         saveIBtn.setOnClickListener(view1 -> {
@@ -62,12 +57,13 @@ public class TaskFragment extends Fragment {
 
         //backIBtn OnClick
         backIBtn.setOnClickListener(view1 -> {
-            getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.fade_in,R.anim.slide_out_left_to_right)
-                    .replace(R.id.FrameLay,new HomeFragment()).commit();
+            getParentFragmentManager().popBackStack();
+
         });
 
         ////////////////////////
+
+
 
         return view;
     }
@@ -86,7 +82,6 @@ public class TaskFragment extends Fragment {
 
     //Push Note To Firebase Method
     private void PushNoteToFirebase(String titleIn, String noteIn) {
-        String userId = firebaseAuth.getCurrentUser().getUid();
         DatabaseReference pushDataRef = databaseReference.child(userId).child("Notes").push();
         String pushKey = pushDataRef.getKey().toString();
         HashMap<String,Object> noteMap = new HashMap<>();
@@ -98,35 +93,11 @@ public class TaskFragment extends Fragment {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
                     Toast.makeText(getContext(), "Dear..."+ userName +" Your Note Saved Successfully", Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.fade_in,R.anim.slide_out_left_to_right)
-                            .replace(R.id.FrameLay,new HomeFragment()).commit();
+                    getParentFragmentManager().popBackStack();
                 }else{
                     Toast.makeText(getContext(), ""+task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
-    //getCurrentUser Method
-    private void getCurrentUser() {
-        String userId = firebaseAuth.getCurrentUser().getUid();
-        DatabaseReference currentUserRef = databaseReference.child(userId).child("Profile").child("Name");
-        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    userName = snapshot.getValue(String.class);
-                }else {
-                    userName = "User";
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
 }
