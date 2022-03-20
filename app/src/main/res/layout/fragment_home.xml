@@ -24,18 +24,18 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="5dp"
-            android:layout_toStartOf="@+id/profileTb" />
+            android:layout_toStartOf="@+id/profileIcon" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileTb"
+            android:id="@+id/profileIcon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="5dp"
             android:src="@drawable/ic_baseline_person_24"
-            app:civ_border_color="#2196F3"
-            app:civ_border_width="2dp" />
+            app:civ_border_color="@color/black"
+            app:civ_border_width="1dp" />
 
     </RelativeLayout>
 
@@ -57,10 +57,10 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="#FFF"
+        android:layout_marginBottom="19dp"
+        android:backgroundTint="@color/MyColor"
         android:src="@drawable/plus"
-        app:borderWidth="5dp"
+        app:borderWidth="1dp"
         app:fabCustomSize="60dp"
         tools:ignore="SpeakableTextPresentCheck" />
 

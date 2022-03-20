@@ -20,13 +20,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +46,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends Fragment {
-    private CircleImageView profileTb;
+    private CircleImageView profileIcon;
     private SearchView searchView;
     private RecyclerView recyclerV;
     private FloatingActionButton addBtn;
@@ -73,8 +79,8 @@ public class HomeFragment extends Fragment {
                     R.anim.slide_out_right_bottom).replace(R.id.FrameLay,new TaskFragment()).addToBackStack(null).commit();
         });
         // Profile ToolBar CircleImageView OnClick
-        profileTb.setOnClickListener(view1 -> {
-            profileTbOnClick();
+        profileIcon.setOnClickListener(view1 -> {
+            profileIconOnClick();
         });
 
         return view;
@@ -83,7 +89,7 @@ public class HomeFragment extends Fragment {
 
 
     private void initial(View view) {
-        profileTb = view.findViewById(R.id.profileTb);
+        profileIcon = view.findViewById(R.id.profileIcon);
         recyclerV = view.findViewById(R.id.recyclerV);
         addBtn = view.findViewById(R.id.addBtn);
         recyclerV = view.findViewById(R.id.recyclerV);
@@ -139,27 +145,112 @@ public class HomeFragment extends Fragment {
     }
 
     // Profile ToolBar CircleImageView OnClick
-    private void profileTbOnClick() {
-        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+    private void profileIconOnClick() {
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////
+        AlertDialog profileDialog = new AlertDialog.Builder(getContext()).create();
         View alertView = LayoutInflater.from(getContext()).inflate(R.layout.profile_layout,null);
         //initialize alertView Components
         CircleImageView profileCiv = alertView.findViewById(R.id.profileCiv);
         TextView nameTv = alertView.findViewById(R.id.nameTv);
+        TextView emailTv = alertView.findViewById(R.id.emailTv);
+        ImageView updateName = alertView.findViewById(R.id.updateName);
         MaterialButton settingsFab = alertView.findViewById(R.id.settingsFab);
         MaterialButton signOutFab = alertView.findViewById(R.id.signOutFab);
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
-        alertDialog.setView(alertView);
+        //set View
+        profileDialog.setView(alertView);
+        //Get Profile Info
+        DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
+        profileRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
+                    //profileCiv
+                    nameTv.setText(profileModel.getName());
+                    emailTv.setText(profileModel.getEmail());
+                }
+            }
 
-        cancelIb.setOnClickListener(view -> {
-            alertDialog.dismiss();
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
 
-        alertDialog.setCancelable(false);
-        alertDialog.show();
-        Window window = alertDialog.getWindow();
+        // CancelBtn Onclick
+        cancelIb.setOnClickListener(view -> {
+            profileDialog.dismiss();
+        });
+
+        // SignOut Fab OnClick
+        signOutFab.setOnClickListener(view -> {
+            firebaseAuth.signOut();
+            getParentFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
+                    .replace(R.id.FrameLay,new SignInFragment()).commit();
+        });
+
+        // UPDATE Name OnClick AlertDialog
+        updateName.setOnClickListener(view -> {
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            AlertDialog nameDialog = new AlertDialog.Builder(getContext()).create();
+            View nameView = LayoutInflater.from(getContext()).inflate(R.layout.single_edittext_updater,null);
+            //initial
+            TextInputEditText updateEt = nameView.findViewById(R.id.updateEt);
+            MaterialButton saveBtn = nameView.findViewById(R.id.saveBtn);
+            ImageButton cancelBtn = nameView.findViewById(R.id.cancelBtn);
+            ProgressBar progress = nameView.findViewById(R.id.updateProgress);
+            updateEt.setHint("Enter New Name Here");
+            //set View
+            nameDialog.setView(nameView);
+
+            // Save Btn OnClick
+            saveBtn.setOnClickListener(view1 -> {
+                String updateIn = updateEt.getText().toString();
+                if (updateIn.isEmpty()){
+                    updateEt.setError("Invalid Value");
+                    updateEt.requestFocus();
+                    return;
+                }
+                progress.setVisibility(View.VISIBLE);
+                DatabaseReference nameRef = databaseReference.child(userId).child("Profile").child("Name");
+                nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                            progress.setVisibility(View.GONE);
+                            Toast.makeText(getContext(),updateIn+" Your Name Changed Successfully",Toast.LENGTH_SHORT).show();
+                            nameDialog.dismiss();
+                        }else {
+                            progress.setVisibility(View.GONE);
+                            Toast.makeText(getContext(),task.getException().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            });
+
+            // Cancel name Dialog
+            cancelBtn.setOnClickListener(view1 -> {
+                nameDialog.dismiss();
+            });
+            nameDialog.setCancelable(false);
+            // Show Name Dialog
+            nameDialog.show();
+        });
+
+        // Settings Fab OnClick
+
+
+        profileDialog.setCancelable(false);
+        profileDialog.show();
+        Window window = profileDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.TOP;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
+
     }
 }

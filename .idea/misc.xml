@@ -28,6 +28,7 @@
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/drawable/ic_baseline_phone_24.xml" value="0.1125" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/drawable/search_bg.xml" value="0.1125" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/fragment_home.xml" value="0.2" />
+        <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/fragment_sign_in.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/fragment_sign_up.xml" value="0.25" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/fragment_task.xml" value="0.12158054711246201" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/home_nav_drawer_layout.xml" value="0.2" />
@@ -36,6 +37,7 @@
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/popup_menu.xml" value="0.25" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/profile_layout.xml" value="0.2" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/save_pass_layout.xml" value="0.25" />
+        <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/layout/single_edittext_updater.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Daud Hoshen Rimon/StudioProjects/Simple-NotePad-App/app/src/main/res/menu/home_nav_drawer.xml" value="0.25" />
       </map>
     </option>

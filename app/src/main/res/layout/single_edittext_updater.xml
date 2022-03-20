@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <ProgressBar
+        android:id="@+id/updateProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/cancelBtn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="7dp"
+        android:backgroundTint="@color/MyColor"
+        android:src="@drawable/ic_baseline_cancel_24"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/updateEtLay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cancelBtn"
+        android:layout_margin="7dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        >
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/updateEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="17dp"
+            android:inputType="text"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/saveBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updateEtLay"
+        android:layout_margin="7dp"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:backgroundTint="@color/MyColor"
+        android:text="Save"
+        android:textSize="17dp"
+        android:textAllCaps="false"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        app:icon="@drawable/ic_baseline_save_24"
+        app:iconGravity="end"
+        app:iconTint="@color/black"/>
+
+</RelativeLayout>
