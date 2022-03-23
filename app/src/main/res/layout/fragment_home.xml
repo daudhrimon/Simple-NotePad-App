@@ -86,7 +86,7 @@
         android:layout_marginBottom="19dp"
         android:backgroundTint="@color/MyColor"
         android:src="@drawable/plus"
-        app:borderWidth="1dp"
+        app:borderWidth="2dp"
         app:fabCustomSize="60dp"
         tools:ignore="SpeakableTextPresentCheck" />
 
