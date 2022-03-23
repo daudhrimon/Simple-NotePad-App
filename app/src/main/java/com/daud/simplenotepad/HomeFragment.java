@@ -1,6 +1,7 @@
 package com.daud.simplenotepad;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -160,8 +161,8 @@ public class HomeFragment extends Fragment {
         TextView nameTv = alertView.findViewById(R.id.nameTv);
         TextView emailTv = alertView.findViewById(R.id.emailTv);
         ImageView updateName = alertView.findViewById(R.id.updateName);
-        MaterialButton settingsFab = alertView.findViewById(R.id.settingsFab);
-        MaterialButton signOutFab = alertView.findViewById(R.id.signOutFab);
+        MaterialButton settingsBtn = alertView.findViewById(R.id.settingsBtn);
+        MaterialButton signOutBtn = alertView.findViewById(R.id.signOutBtn);
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
         //set View
         profileDialog.setView(alertView);
@@ -190,11 +191,31 @@ public class HomeFragment extends Fragment {
         });
 
         // SignOut Fab OnClick
-        signOutFab.setOnClickListener(view -> {
-            firebaseAuth.signOut();
-            getParentFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
-                    .replace(R.id.FrameLay,new SignInFragment()).commit();
+        signOutBtn.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setCancelable(false);
+            builder.setTitle("SignOut Alert !");
+            builder.setMessage("Do You Want To SignOut ?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    editor.putString("SignIn","False");
+                    editor.commit();
+                    firebaseAuth.signOut();
+                    getParentFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
+                            .replace(R.id.FrameLay,new SignInFragment()).commit();
+                    dialogInterface.dismiss();
+                    profileDialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                   dialogInterface.dismiss();
+                }
+            });
+            builder.show();
         });
 
         // UPDATE Name OnClick AlertDialog
