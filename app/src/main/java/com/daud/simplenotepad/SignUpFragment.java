@@ -75,18 +75,6 @@ public class SignUpFragment extends Fragment {
         return view;
     }
 
-    //initialization
-    private void initial(View view) {
-        nameEt = view.findViewById(R.id.nameEtSup);
-        emailEt = view.findViewById(R.id.emailEtSup);
-        passwordEt = view.findViewById(R.id.passwordEtSup);
-        signUpnBt = view.findViewById(R.id.signUpBtnSup);
-        signInBtn = view.findViewById(R.id.signInBtnSup);
-        progress = view.findViewById(R.id.progressSup);
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-    }
-
     //SignUpBtnAuth
     private void SignUpBtnAuth(String nameIn, String emailIn, String passwordIN) {
         //FirebaseAuth
@@ -124,5 +112,17 @@ public class SignUpFragment extends Fragment {
                 }
             }
         });
+    }
+
+    //initialization
+    private void initial(View view) {
+        nameEt = view.findViewById(R.id.nameEtSup);
+        emailEt = view.findViewById(R.id.emailEtSup);
+        passwordEt = view.findViewById(R.id.passwordEtSup);
+        signUpnBt = view.findViewById(R.id.signUpBtnSup);
+        signInBtn = view.findViewById(R.id.signInBtnSup);
+        progress = view.findViewById(R.id.progressSup);
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 }

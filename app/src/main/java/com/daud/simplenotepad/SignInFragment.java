@@ -1,5 +1,7 @@
 package com.daud.simplenotepad;
 
+import static com.daud.simplenotepad.MainActivity.editor;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -32,8 +34,6 @@ public class SignInFragment extends Fragment {
     private MaterialButton signInBtn,signUpBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     private ProgressBar progress;
     private String userName = "User";
 
@@ -78,19 +78,6 @@ public class SignInFragment extends Fragment {
         return view;
     }
 
-    //initialization
-    private void initial(View view) {
-        signUpBtn = view.findViewById(R.id.signUpBtn);
-        emailEt = view.findViewById(R.id.emailEt);
-        passwordEt = view.findViewById(R.id.passwordEt);
-        signInBtn = view.findViewById(R.id.signInBtn);
-        progress = view.findViewById(R.id.progressSin);
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
-        sharedPreferences = getActivity().getSharedPreferences("MySp", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
-    }
-
     //SignInBtn Auth Method
     private void signInBtnAuth(String emailInSin, String passwordInSin) {
         //FirebaseAuth
@@ -110,7 +97,7 @@ public class SignInFragment extends Fragment {
                                 userName = "User";
                             }
                             editor.putString("userId",userId);
-                            editor.putString("userName",userName);
+                            editor.putString("Name",userName);
                             editor.commit();
                             progress.setVisibility(View.INVISIBLE);
 
@@ -164,6 +151,14 @@ public class SignInFragment extends Fragment {
         });
     }
 
-
-
+    //initialization
+    private void initial(View view) {
+        signUpBtn = view.findViewById(R.id.signUpBtn);
+        emailEt = view.findViewById(R.id.emailEt);
+        passwordEt = view.findViewById(R.id.passwordEt);
+        signInBtn = view.findViewById(R.id.signInBtn);
+        progress = view.findViewById(R.id.progressSin);
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
+    }
 }

@@ -1,5 +1,9 @@
 package com.daud.simplenotepad;
 
+import static com.daud.simplenotepad.MainActivity.editor;
+import static com.daud.simplenotepad.MainActivity.hideKeyboard;
+import static com.daud.simplenotepad.MainActivity.sharedPreferences;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -55,18 +59,16 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private List<NotesModel> list;
-    private SharedPreferences sharedPreferences;
-    private SharedPreferences.Editor editor;
     public static String userId;
     public static String userName;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private ProgressBar progress;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
         // initialize
         initial(view);
         // Show Data RecyclerView
@@ -75,7 +77,7 @@ public class HomeFragment extends Fragment {
         getUserName();
         //Plus Fab OnClick
         addBtn.setOnClickListener(view1 -> {
-
+            editor.putString("State","Add").commit();
             getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
                     R.anim.fade_out,
                     R.anim.fade_in,
@@ -87,24 +89,6 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
-    }
-
-
-
-    private void initial(View view) {
-        profileIcon = view.findViewById(R.id.profileIcon);
-        recyclerV = view.findViewById(R.id.recyclerV);
-        addBtn = view.findViewById(R.id.addBtn);
-        recyclerV = view.findViewById(R.id.recyclerV);
-        recyclerV.setHasFixedSize(true);
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
-        recyclerV.setLayoutManager(staggeredGridLayoutManager);
-        recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
-        list = new ArrayList<>();
-        sharedPreferences = getContext().getSharedPreferences("MySp", Context.MODE_PRIVATE);
-        editor = sharedPreferences.edit();
     }
 
     //Show All Notes
@@ -166,7 +150,110 @@ public class HomeFragment extends Fragment {
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
         //set View
         profileDialog.setView(alertView);
-        //Get Profile Info
+        nameTv.setText(sharedPreferences.getString("Name",""));
+        emailTv.setText(sharedPreferences.getString("Email",""));
+
+        //Get Profile Data
+        getProfileDataFirebase(profileCiv,nameTv,emailTv);
+
+        // CancelBtn Onclick
+        cancelIb.setOnClickListener(view -> {
+            hideKeyboard(getActivity());
+            profileDialog.dismiss();
+        });
+
+        // SignOut Fab OnClick
+        signOutBtn.setOnClickListener(view -> {
+            signOutBtnOnClickFromDialog(profileDialog);
+        });
+
+        // UPDATE Name OnClick AlertDialog
+        updateName.setOnClickListener(view -> {
+            updateNameOnClickMethod();
+        });
+////////////////////////////////////////////////////////////////////////////////
+        profileDialog.setCancelable(false);
+        profileDialog.show();
+        Window window = profileDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.TOP;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+    }
+
+    private void signOutBtnOnClickFromDialog(AlertDialog profileDialog) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setCancelable(false);
+        builder.setTitle("SignOut Alert !");
+        builder.setMessage("Do You Want To SignOut ?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                editor.putString("SignIn","False");
+                editor.commit();
+                firebaseAuth.signOut();
+                getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
+                        .replace(R.id.FrameLay,new SignInFragment()).commit();
+                dialogInterface.dismiss();
+                profileDialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void updateNameOnClickMethod() {
+        AlertDialog nameDialog = new AlertDialog.Builder(getContext()).create();
+        View nameView = LayoutInflater.from(getContext()).inflate(R.layout.single_edittext_updater,null);
+        //initial
+        TextInputEditText updateEt = nameView.findViewById(R.id.updateEt);
+        MaterialButton saveBtn = nameView.findViewById(R.id.saveBtn);
+        ImageButton cancelBtn = nameView.findViewById(R.id.cancelBtn);
+        ProgressBar progress = nameView.findViewById(R.id.updateProgress);
+        updateEt.setHint("Enter New Name Here");
+        //set View
+        nameDialog.setView(nameView);
+
+        // Save Btn OnClick
+        saveBtn.setOnClickListener(view1 -> {
+            String updateIn = updateEt.getText().toString();
+            if (updateIn.isEmpty()){
+                updateEt.setError("Invalid Value");
+                updateEt.requestFocus();
+                return;
+            }
+            progress.setVisibility(View.VISIBLE);
+            DatabaseReference nameRef = databaseReference.child(userId).child("Profile").child("Name");
+            nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()){
+                        progress.setVisibility(View.GONE);
+                        Toast.makeText(getContext(),updateIn+" Your Name Changed Successfully",Toast.LENGTH_SHORT).show();
+                        hideKeyboard(getActivity());
+                        nameDialog.dismiss();
+                    }else {
+                        progress.setVisibility(View.GONE);
+                        Toast.makeText(getContext(),task.getException().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        });
+
+        cancelBtn.setOnClickListener(view1 -> {
+            nameDialog.dismiss();
+        });
+        nameDialog.setCancelable(false);
+        nameDialog.show();
+    }
+
+    private void getProfileDataFirebase(CircleImageView profileCiv, TextView nameTv, TextView emailTv) {
         DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
         profileRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -174,8 +261,11 @@ public class HomeFragment extends Fragment {
                 if (snapshot.exists()){
                     ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
                     //profileCiv
-                    nameTv.setText(profileModel.getName());
-                    emailTv.setText(profileModel.getEmail());
+                    editor.putString("Name",profileModel.getName());
+                    editor.putString("Email",profileModel.getEmail());
+                    editor.commit();
+                    nameTv.setText(sharedPreferences.getString("Name",""));
+                    emailTv.setText(sharedPreferences.getString("Email",""));
                 }
             }
 
@@ -184,98 +274,19 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
 
-        // CancelBtn Onclick
-        cancelIb.setOnClickListener(view -> {
-            profileDialog.dismiss();
-        });
-
-        // SignOut Fab OnClick
-        signOutBtn.setOnClickListener(view -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setCancelable(false);
-            builder.setTitle("SignOut Alert !");
-            builder.setMessage("Do You Want To SignOut ?");
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    editor.putString("SignIn","False");
-                    editor.commit();
-                    firebaseAuth.signOut();
-                    getParentFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
-                            .replace(R.id.FrameLay,new SignInFragment()).commit();
-                    dialogInterface.dismiss();
-                    profileDialog.dismiss();
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                   dialogInterface.dismiss();
-                }
-            });
-            builder.show();
-        });
-
-        // UPDATE Name OnClick AlertDialog
-        updateName.setOnClickListener(view -> {
-            //////////////////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////////////
-            AlertDialog nameDialog = new AlertDialog.Builder(getContext()).create();
-            View nameView = LayoutInflater.from(getContext()).inflate(R.layout.single_edittext_updater,null);
-            //initial
-            TextInputEditText updateEt = nameView.findViewById(R.id.updateEt);
-            MaterialButton saveBtn = nameView.findViewById(R.id.saveBtn);
-            ImageButton cancelBtn = nameView.findViewById(R.id.cancelBtn);
-            ProgressBar progress = nameView.findViewById(R.id.updateProgress);
-            updateEt.setHint("Enter New Name Here");
-            //set View
-            nameDialog.setView(nameView);
-
-            // Save Btn OnClick
-            saveBtn.setOnClickListener(view1 -> {
-                String updateIn = updateEt.getText().toString();
-                if (updateIn.isEmpty()){
-                    updateEt.setError("Invalid Value");
-                    updateEt.requestFocus();
-                    return;
-                }
-                progress.setVisibility(View.VISIBLE);
-                DatabaseReference nameRef = databaseReference.child(userId).child("Profile").child("Name");
-                nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            progress.setVisibility(View.GONE);
-                            Toast.makeText(getContext(),updateIn+" Your Name Changed Successfully",Toast.LENGTH_SHORT).show();
-                            nameDialog.dismiss();
-                        }else {
-                            progress.setVisibility(View.GONE);
-                            Toast.makeText(getContext(),task.getException().getMessage().toString(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            });
-
-            // Cancel name Dialog
-            cancelBtn.setOnClickListener(view1 -> {
-                nameDialog.dismiss();
-            });
-            nameDialog.setCancelable(false);
-            // Show Name Dialog
-            nameDialog.show();
-        });
-
-        // Settings Fab OnClick
-
-        profileDialog.setCancelable(false);
-        profileDialog.show();
-        Window window = profileDialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.TOP;
-        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        window.setAttributes(wlp);
-
+    private void initial(View view) {
+        profileIcon = view.findViewById(R.id.profileIcon);
+        recyclerV = view.findViewById(R.id.recyclerV);
+        addBtn = view.findViewById(R.id.addBtn);
+        recyclerV = view.findViewById(R.id.recyclerV);
+        recyclerV.setHasFixedSize(true);
+        recyclerV.setLayoutManager(staggeredGridLayoutManager);
+        recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
+        list = new ArrayList<>();
+        progress = view.findViewById(R.id.progress);
     }
 }
