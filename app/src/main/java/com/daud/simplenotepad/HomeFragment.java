@@ -171,7 +171,7 @@ public class HomeFragment extends Fragment {
         updateName.setOnClickListener(view -> {
             updateNameOnClickMethod();
         });
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
         profileDialog.setCancelable(false);
         profileDialog.show();
         Window window = profileDialog.getWindow();

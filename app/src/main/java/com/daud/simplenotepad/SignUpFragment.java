@@ -75,7 +75,7 @@ public class SignUpFragment extends Fragment {
         return view;
     }
 
-    //SignUpBtnAuth
+    // SignUpBtnAuth
     private void SignUpBtnAuth(String nameIn, String emailIn, String passwordIN) {
         //FirebaseAuth
         progress.setVisibility(View.VISIBLE);

@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-    // Doing Shared preference Empty
+    // Doing Shared preference Empty //
     public static void setSharedPreferencesEmpty(){
         editor.putString("Title","");
         editor.putString("Note","");

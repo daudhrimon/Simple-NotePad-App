@@ -66,7 +66,7 @@ public class SignInFragment extends Fragment {
 
         });
 
-        //signUpBtn OnClick
+        // signUpBtn OnClick //
         signUpBtn.setOnClickListener(view1 -> {
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right_to_left, R.anim.fade_out,

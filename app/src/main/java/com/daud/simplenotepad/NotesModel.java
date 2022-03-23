@@ -5,7 +5,7 @@ public class NotesModel {
     String Note;
     String Key;
 
-    public NotesModel() {
+    public NotesModel(){
     }
 
     public NotesModel(String title, String note, String key) {

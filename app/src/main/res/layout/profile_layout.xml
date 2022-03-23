@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:elevation="7dp">
+    android:elevation="7dp"
+    >
 
     <ImageButton
         android:id="@+id/cancelIb"

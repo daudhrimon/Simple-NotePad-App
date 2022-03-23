@@ -90,8 +90,7 @@ public class TaskFragment extends Fragment {
             MainActivity.setSharedPreferencesEmpty();
         });
 
-        ////////////////////////
-
+        //////////////////////////////////////////////////
 
         return view;
     }

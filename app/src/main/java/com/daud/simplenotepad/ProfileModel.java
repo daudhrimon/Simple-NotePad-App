@@ -5,7 +5,7 @@ public class ProfileModel {
     private String Email;
     private String Image;
 
-    public ProfileModel() {
+    public ProfileModel(){
     }
 
     public String getName() {

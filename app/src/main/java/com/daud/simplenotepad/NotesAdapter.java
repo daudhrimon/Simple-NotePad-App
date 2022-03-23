@@ -55,7 +55,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         });
 
         holder.itemView.setOnLongClickListener(view -> {
-
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Delete Alert !");
             builder.setMessage("Do You Want To Delete This Note ?");

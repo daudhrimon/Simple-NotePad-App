@@ -3,4 +3,5 @@
     android:duration="@android:integer/config_longAnimTime"
     android:interpolator="@android:anim/decelerate_interpolator"
     android:fromAlpha="0"
-    android:toAlpha="1"/>
+    android:toAlpha="1"
+    />
