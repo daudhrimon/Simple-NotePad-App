@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/browser_actions_divider_color"
+    android:orientation="vertical">
 
     <ImageButton
         android:id="@+id/cancelIb"
@@ -12,24 +13,23 @@
         android:layout_height="50dp"
         android:layout_gravity="end"
         android:layout_marginEnd="5dp"
-        android:backgroundTint="@color/MyColor"
+        android:backgroundTint="@color/purple_200"
         android:src="@drawable/ic_baseline_cancel_24"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <RelativeLayout
         android:id="@+id/profileLayout"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_gravity="center"
-        android:layout_marginBottom="7dp"
-        >
+        android:layout_marginBottom="7dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profileCiv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/ic_baseline_person_24"
-            app:civ_border_color="@color/MyColor"
+            app:civ_border_color="@color/black"
             app:civ_border_width="1dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:backgroundTint="@color/MyColor"
+            android:backgroundTint="@color/purple_200"
             android:padding="5dp"
             android:src="@drawable/ic_baseline_add_a_photo_24"
             app:borderWidth="0dp"
@@ -60,23 +60,24 @@
             android:id="@+id/nameTv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
             android:layout_margin="5dp"
+            android:layout_weight="9"
             android:drawableStart="@drawable/ic_baseline_person_24"
             android:drawablePadding="5dp"
             android:text="Name"
             android:textAlignment="center"
             android:textSize="20dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
 
         <ImageView
             android:id="@+id/updateName"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="bottom"
             android:layout_margin="7dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_edit_24"
-            android:layout_gravity="bottom" />
+            android:src="@drawable/ic_baseline_edit_24" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,9 +97,11 @@
             android:drawableStart="@drawable/ic_baseline_email_24"
             android:drawablePadding="5dp"
             android:text="Email"
-            android:textStyle="bold"
             android:textAlignment="textStart"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
@@ -107,36 +110,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:icon="@drawable/settings"
-        app:iconGravity="end"
-        app:iconTint="@color/black"
         android:layout_marginStart="7dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="5dp"
+        android:backgroundTint="@color/purple_200"
         android:text=" Settings"
-        android:textSize="17dp"
         android:textAllCaps="false"
-        android:backgroundTint="@color/MyColor"
         android:textColor="@color/black"
-        android:textStyle="bold"/>
+        android:textSize="17dp"
+        android:textStyle="bold"
+        app:icon="@drawable/settings"
+        app:iconGravity="end"
+        app:iconTint="@color/black" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/signOutFab"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:icon="@drawable/sign_out"
-        app:iconGravity="end"
-        app:iconTint="@color/black"
         android:layout_gravity="center"
         android:layout_marginStart="7dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="7dp"
+        android:backgroundTint="@color/purple_200"
         android:text="SignOut"
-        android:textSize="17dp"
         android:textAllCaps="false"
-        android:backgroundTint="@color/MyColor"
         android:textColor="@color/black"
-        android:textStyle="bold"/>
+        android:textSize="17dp"
+        android:textStyle="bold"
+        app:icon="@drawable/sign_out"
+        app:iconGravity="end"
+        app:iconTint="@color/black" />
 
 </LinearLayout>
+
+

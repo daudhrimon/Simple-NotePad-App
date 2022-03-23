@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_margin="3dp"
-    android:padding="10dp"
-    android:background="@drawable/button_shape">
+    android:layout_margin="4dp"
+    app:cardCornerRadius="11dp"
+    android:elevation="5dp"
+    app:cardMaxElevation="5dp">
 
-    <TextView
-        android:id="@+id/titleTvNvh"
+    <LinearLayout
+        android:id="@+id/noteCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="1dp"
-        android:text="Title"
-        android:textSize="20dp"
-        android:textColor="#000000"
-        android:textStyle="bold"/>
+        android:orientation="vertical"
+        android:padding="11dp">
 
-    <TextView
-        android:id="@+id/noteTvNvh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="1dp"
-        android:text="Body"
-        android:textColor="#000000"
-        android:textSize="20dp"
-        android:maxHeight="170dp"/>
+        <TextView
+            android:id="@+id/titleTvNvh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:text="Title"
+            android:textColor="#000000"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/noteTvNvh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:maxHeight="170dp"
+            android:text="Body"
+            android:textColor="#000000"
+            android:textSize="20dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

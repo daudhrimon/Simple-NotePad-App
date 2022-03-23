@@ -11,6 +11,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.print.PrintAttributes;
 import android.view.Gravity;
@@ -57,13 +58,14 @@ public class HomeFragment extends Fragment {
     private SharedPreferences.Editor editor;
     public static String userId;
     public static String userName;
-
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         // initialize
         initial(view);
         // Show Data RecyclerView
@@ -93,7 +95,10 @@ public class HomeFragment extends Fragment {
         recyclerV = view.findViewById(R.id.recyclerV);
         addBtn = view.findViewById(R.id.addBtn);
         recyclerV = view.findViewById(R.id.recyclerV);
-        recyclerV.setLayoutManager(new GridLayoutManager(getContext(),2));
+        recyclerV.setHasFixedSize(true);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        recyclerV.setLayoutManager(staggeredGridLayoutManager);
+        recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
         list = new ArrayList<>();
@@ -242,7 +247,6 @@ public class HomeFragment extends Fragment {
         });
 
         // Settings Fab OnClick
-
 
         profileDialog.setCancelable(false);
         profileDialog.show();
