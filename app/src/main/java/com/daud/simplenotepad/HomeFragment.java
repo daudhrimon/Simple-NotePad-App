@@ -1,14 +1,22 @@
 package com.daud.simplenotepad;
 
+import static android.app.Activity.RESULT_OK;
 import static com.daud.simplenotepad.MainActivity.editor;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AlertDialogLayout;
@@ -19,17 +27,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.print.PrintAttributes;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +59,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +77,8 @@ public class HomeFragment extends Fragment {
     public static String userName;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private ProgressBar progress;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private String ACTION;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,15 +93,33 @@ public class HomeFragment extends Fragment {
         getUserName();
         //Plus Fab OnClick
         addBtn.setOnClickListener(view1 -> {
-            editor.putString("State","Add").commit();
+            editor.putString("State", "Add").commit();
             getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
                     R.anim.fade_out,
                     R.anim.fade_in,
-                    R.anim.slide_out_right_bottom).replace(R.id.FrameLay,new TaskFragment()).addToBackStack(null).commit();
+                    R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
         });
         // Profile ToolBar CircleImageView OnClick
         profileIcon.setOnClickListener(view1 -> {
             profileIconOnClick();
+        });
+
+        //////////////////////////////////////////////
+        activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result!=null && result.getData()!=null){
+                   if (ACTION.equals("CAMERA")){
+                       Bundle bundle = result.getData().getExtras();
+                       Bitmap imgBitmap = (Bitmap) bundle.get("data");
+                       MainActivity mainActivity = new MainActivity();
+                       Uri imgUri = mainActivity.getImageUri(imgBitmap, Bitmap.CompressFormat.JPEG,100);
+                   }else if (ACTION.equals("GALLERY")){
+                       Uri imgUri = result.getData().getData();
+
+                   }
+                }
+            }
         });
 
         return view;
@@ -93,20 +127,27 @@ public class HomeFragment extends Fragment {
 
     //Show All Notes
     private void ShowAllNotes() {
-        userId = sharedPreferences.getString("userId","");
+        userId = sharedPreferences.getString("userId", "");
         DatabaseReference dataRef = databaseReference.child(userId).child("Notes");
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                list.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()){
-                    if (dataSnapshot.exists()){
-                        NotesModel notesModel = dataSnapshot.getValue(NotesModel.class);
-                        list.add(notesModel);
+                if (snapshot.exists()) {
+                    list.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        if (dataSnapshot.exists()) {
+                            NotesModel notesModel = dataSnapshot.getValue(NotesModel.class);
+                            list.add(notesModel);
+                        }else {
+                            return;
+                        }
                     }
+                }else {
+                    return;
                 }
-                recyclerV.setAdapter(new NotesAdapter(getContext(),list));
+                recyclerV.setAdapter(new NotesAdapter(getContext(), list));
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -116,30 +157,14 @@ public class HomeFragment extends Fragment {
 
     //Get UserName As Public
     private void getUserName() {
-        DatabaseReference userNameRef = databaseReference.child(userId).child("Profile").child("Name");
-        userNameRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    userName = snapshot.getValue().toString();
-                }else{
-                    userName = "User";
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+       userName = sharedPreferences.getString("Name","");
     }
 
     // Profile ToolBar CircleImageView OnClick
     private void profileIconOnClick() {
         //////////////////////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////
         AlertDialog profileDialog = new AlertDialog.Builder(getContext()).create();
-        View alertView = LayoutInflater.from(getContext()).inflate(R.layout.profile_layout,null);
+        View alertView = LayoutInflater.from(getContext()).inflate(R.layout.profile_layout, null);
         //initialize alertView Components
         CircleImageView profileCiv = alertView.findViewById(R.id.profileCiv);
         TextView nameTv = alertView.findViewById(R.id.nameTv);
@@ -148,13 +173,14 @@ public class HomeFragment extends Fragment {
         MaterialButton settingsBtn = alertView.findViewById(R.id.settingsBtn);
         MaterialButton signOutBtn = alertView.findViewById(R.id.signOutBtn);
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
-        //set View
+        ImageView updateImage = alertView.findViewById(R.id.updateImage);
         profileDialog.setView(alertView);
-        nameTv.setText(sharedPreferences.getString("Name",""));
-        emailTv.setText(sharedPreferences.getString("Email",""));
-
+        ///////////////////////////////////////////////////////////////////
+        nameTv.setText(sharedPreferences.getString("Name", ""));
+        emailTv.setText(sharedPreferences.getString("Email", ""));
+        ///////////////////////////////////////////////////////////////////
         //Get Profile Data
-        getProfileDataFirebase(profileCiv,nameTv,emailTv);
+        getProfileDataFirebase(profileCiv, nameTv, emailTv);
 
         // CancelBtn Onclick
         cancelIb.setOnClickListener(view -> {
@@ -171,7 +197,20 @@ public class HomeFragment extends Fragment {
         updateName.setOnClickListener(view -> {
             updateNameOnClickMethod();
         });
-/////////////////////////////////////////////////////////////////////////////////////////
+
+        updateImage.setOnClickListener(view -> {
+            PopupMenu popupMenu = new PopupMenu(getContext(),updateImage);
+            popupMenu.getMenuInflater().inflate(R.menu.image_picker_menu,popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    Toast.makeText(getContext(),""+menuItem.getTitle(),Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            });
+            popupMenu.show();
+        });
+
         profileDialog.setCancelable(false);
         profileDialog.show();
         Window window = profileDialog.getWindow();
@@ -181,6 +220,7 @@ public class HomeFragment extends Fragment {
         window.setAttributes(wlp);
     }
 
+
     private void signOutBtnOnClickFromDialog(AlertDialog profileDialog) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
@@ -189,12 +229,12 @@ public class HomeFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                editor.putString("SignIn","False");
+                editor.putString("SignIn", "False");
                 editor.commit();
                 firebaseAuth.signOut();
                 getParentFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
-                        .replace(R.id.FrameLay,new SignInFragment()).commit();
+                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
+                        .replace(R.id.FrameLay, new SignInFragment()).commit();
                 dialogInterface.dismiss();
                 profileDialog.dismiss();
             }
@@ -210,7 +250,7 @@ public class HomeFragment extends Fragment {
 
     private void updateNameOnClickMethod() {
         AlertDialog nameDialog = new AlertDialog.Builder(getContext()).create();
-        View nameView = LayoutInflater.from(getContext()).inflate(R.layout.single_edittext_updater,null);
+        View nameView = LayoutInflater.from(getContext()).inflate(R.layout.single_edittext_updater, null);
         //initial
         TextInputEditText updateEt = nameView.findViewById(R.id.updateEt);
         MaterialButton saveBtn = nameView.findViewById(R.id.saveBtn);
@@ -223,7 +263,7 @@ public class HomeFragment extends Fragment {
         // Save Btn OnClick
         saveBtn.setOnClickListener(view1 -> {
             String updateIn = updateEt.getText().toString();
-            if (updateIn.isEmpty()){
+            if (updateIn.isEmpty()) {
                 updateEt.setError("Invalid Value");
                 updateEt.requestFocus();
                 return;
@@ -233,14 +273,14 @@ public class HomeFragment extends Fragment {
             nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         progress.setVisibility(View.GONE);
-                        Toast.makeText(getContext(),updateIn+" Your Name Changed Successfully",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), updateIn + " Your Name Changed Successfully", Toast.LENGTH_SHORT).show();
                         hideKeyboard(getActivity());
                         nameDialog.dismiss();
-                    }else {
+                    } else {
                         progress.setVisibility(View.GONE);
-                        Toast.makeText(getContext(),task.getException().getMessage().toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -258,14 +298,14 @@ public class HomeFragment extends Fragment {
         profileRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
+                if (snapshot.exists()) {
                     ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
                     //profileCiv
-                    editor.putString("Name",profileModel.getName());
-                    editor.putString("Email",profileModel.getEmail());
+                    editor.putString("Name", profileModel.getName());
+                    editor.putString("Email", profileModel.getEmail());
                     editor.commit();
-                    nameTv.setText(sharedPreferences.getString("Name",""));
-                    emailTv.setText(sharedPreferences.getString("Email",""));
+                    nameTv.setText(sharedPreferences.getString("Name", ""));
+                    emailTv.setText(sharedPreferences.getString("Email", ""));
                 }
             }
 
@@ -283,7 +323,7 @@ public class HomeFragment extends Fragment {
         recyclerV = view.findViewById(R.id.recyclerV);
         recyclerV.setHasFixedSize(true);
         recyclerV.setLayoutManager(staggeredGridLayoutManager);
-        recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
         list = new ArrayList<>();
