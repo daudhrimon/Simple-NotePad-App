@@ -1,9 +1,11 @@
 package com.daud.simplenotepad;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -55,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
     // Bitmap to Uri Converter
-    public Uri getImageUri(Bitmap src, Bitmap.CompressFormat format, int quality) {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        src.compress(format, quality, os);
-
-        String path = MediaStore.Images.Media.insertImage(getContentResolver(), src, "title", null);
+    public static Uri getImageUri(Activity inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Image", null);
         return Uri.parse(path);
     }
 }

@@ -88,6 +88,7 @@ public class SignUpFragment extends Fragment {
                     HashMap<String,Object> profileMAp = new HashMap<>();
                     profileMAp.put("Name",nameIn);
                     profileMAp.put("Email",emailIn);
+                    profileMAp.put("Image","");
                     profileMAp.put("userId",userId);
                     profileRef.setValue(profileMAp).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override

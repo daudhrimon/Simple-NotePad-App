@@ -69,7 +69,30 @@
             android:paddingStart="7dp"
             android:paddingTop="7dp"
             android:paddingEnd="7dp"
-            android:paddingBottom="0dp" />
+            android:paddingBottom="0dp"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/emptyNotice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="222dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/idea" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="Notes you add, will appear here"
+                android:textAlignment="center" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
