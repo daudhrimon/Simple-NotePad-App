@@ -213,8 +213,30 @@ public class HomeFragment extends Fragment {
         nameTv.setText(sharedPreferences.getString("Name", ""));
         emailTv.setText(sharedPreferences.getString("Email", ""));
 
+        DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
+        profileRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
+                    nameTv.setText(profileModel.getName());
+                    emailTv.setText(profileModel.getEmail());
 
-        getProfileDataFirebase(profileCiv, nameTv, emailTv);
+                    Picasso.get()
+                            .load(profileModel.getImage())
+                            .placeholder(R.drawable.ic_baseline_person_24)
+                            .error(R.drawable.ic_baseline_person_24)
+                            .into(profileCiv);
+
+                    editor.putString("Name", profileModel.getName());
+                    editor.putString("Email", profileModel.getEmail());
+                    editor.commit();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
 
         // CancelBtn Onclick
         cancelIb.setOnClickListener(view -> {
@@ -338,33 +360,6 @@ public class HomeFragment extends Fragment {
         nameDialog.show();
     }
 
-    private void getProfileDataFirebase(CircleImageView profileCiv, TextView nameTv, TextView emailTv) {
-        DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
-        profileRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
-                    nameTv.setText(profileModel.getName());
-                    emailTv.setText(profileModel.getEmail());
-                    Picasso.get()
-                            .load(profileModel.getImage())
-                            .placeholder(R.drawable.ic_baseline_person_24)
-                            .error(R.drawable.ic_baseline_person_24)
-                            .into(profileCiv);
-
-                    editor.putString("Name", profileModel.getName());
-                    editor.putString("Email", profileModel.getEmail());
-                    editor.commit();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     private void initial(View view) {
         profileIcon = view.findViewById(R.id.profileIcon);
