@@ -213,6 +213,7 @@ public class HomeFragment extends Fragment {
         nameTv.setText(sharedPreferences.getString("Name", ""));
         emailTv.setText(sharedPreferences.getString("Email", ""));
 
+
         getProfileDataFirebase(profileCiv, nameTv, emailTv);
 
         // CancelBtn Onclick
@@ -346,10 +347,11 @@ public class HomeFragment extends Fragment {
                     ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
                     nameTv.setText(profileModel.getName());
                     emailTv.setText(profileModel.getEmail());
-
-                    Picasso.get().load(profileModel.getImage())
+                    Picasso.get()
+                            .load(profileModel.getImage())
                             .placeholder(R.drawable.ic_baseline_person_24)
-                            .error(R.drawable.ic_baseline_person_24).into(profileCiv);
+                            .error(R.drawable.ic_baseline_person_24)
+                            .into(profileCiv);
 
                     editor.putString("Name", profileModel.getName());
                     editor.putString("Email", profileModel.getEmail());
