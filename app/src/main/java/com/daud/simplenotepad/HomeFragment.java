@@ -173,7 +173,7 @@ public class HomeFragment extends Fragment {
         MaterialButton settingsBtn = alertView.findViewById(R.id.settingsBtn);
         MaterialButton signOutBtn = alertView.findViewById(R.id.signOutBtn);
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
-        ImageView updateImage = alertView.findViewById(R.id.updateImage);
+        FloatingActionButton updateImage = alertView.findViewById(R.id.updateImage);
         profileDialog.setView(alertView);
         ///////////////////////////////////////////////////////////////////
         nameTv.setText(sharedPreferences.getString("Name", ""));
