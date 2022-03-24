@@ -66,7 +66,7 @@ import java.util.UUID;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends Fragment {
-    private CircleImageView profileIcon;
+    private FloatingActionButton profileIcon;
     private SearchView searchView;
     private RecyclerView recyclerV;
     private LinearLayout emptyNotice;
@@ -91,10 +91,6 @@ public class HomeFragment extends Fragment {
         initial(view);
         // Show Data RecyclerView
         showAllNotes();
-
-        Picasso.get().load(sharedPreferences.getString("Image",""))
-                .placeholder(R.drawable.ic_baseline_person_24)
-                .error(R.drawable.ic_baseline_person_24).into(profileIcon);
 
         //Plus Fab OnClick
         addBtn.setOnClickListener(view1 -> {
@@ -217,11 +213,6 @@ public class HomeFragment extends Fragment {
         nameTv.setText(sharedPreferences.getString("Name", ""));
         emailTv.setText(sharedPreferences.getString("Email", ""));
 
-        Picasso.get().load(sharedPreferences.getString("Image",""))
-                .placeholder(R.drawable.ic_baseline_person_24)
-                .error(R.drawable.ic_baseline_person_24).into(profileCiv);
-        ///////////////////////////////////////////////////////////////////
-        //Get Profile Data
         getProfileDataFirebase(profileCiv, nameTv, emailTv);
 
         // CancelBtn Onclick
@@ -360,13 +351,8 @@ public class HomeFragment extends Fragment {
                             .placeholder(R.drawable.ic_baseline_person_24)
                             .error(R.drawable.ic_baseline_person_24).into(profileCiv);
 
-                    Picasso.get().load(profileModel.getImage())
-                            .placeholder(R.drawable.ic_baseline_person_24)
-                            .error(R.drawable.ic_baseline_person_24).into(profileIcon);
-
                     editor.putString("Name", profileModel.getName());
                     editor.putString("Email", profileModel.getEmail());
-                    editor.putString("Image",profileModel.getImage());
                     editor.commit();
                 }
             }
