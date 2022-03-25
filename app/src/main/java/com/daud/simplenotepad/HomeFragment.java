@@ -203,7 +203,7 @@ public class HomeFragment extends Fragment {
         CircleImageView profileCiv = alertView.findViewById(R.id.profileCiv);
         TextView nameTv = alertView.findViewById(R.id.nameTv);
         TextView emailTv = alertView.findViewById(R.id.emailTv);
-        ImageView updateName = alertView.findViewById(R.id.updateName);
+        MaterialButton updateName = alertView.findViewById(R.id.updateName);
         MaterialButton settingsBtn = alertView.findViewById(R.id.settingsBtn);
         MaterialButton signOutBtn = alertView.findViewById(R.id.signOutBtn);
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
