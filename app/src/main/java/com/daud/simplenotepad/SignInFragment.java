@@ -161,6 +161,6 @@ public class SignInFragment extends Fragment {
         signInBtn = view.findViewById(R.id.signInBtn);
         progress = view.findViewById(R.id.progressSin);
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
     }
 }

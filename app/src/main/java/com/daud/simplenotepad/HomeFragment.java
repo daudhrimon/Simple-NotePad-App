@@ -1,11 +1,9 @@
 package com.daud.simplenotepad;
 
-import static android.app.Activity.RESULT_OK;
 import static com.daud.simplenotepad.MainActivity.editor;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,11 +15,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -34,7 +30,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -58,10 +53,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -74,7 +67,7 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
-    private List<NotesModel> list;
+    private List<IdeasModel> list;
     public static String userId;
     public static String userName;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
@@ -90,7 +83,7 @@ public class HomeFragment extends Fragment {
         // initialize
         initial(view);
         // Show Data RecyclerView
-        showAllNotes();
+        showAllIdeas();
 
         //Plus Fab OnClick
         addBtn.setOnClickListener(view1 -> {
@@ -162,9 +155,9 @@ public class HomeFragment extends Fragment {
     }
 
     //Show All Notes
-    private void showAllNotes() {
+    private void showAllIdeas() {
         userId = sharedPreferences.getString("userId", "");
-        DatabaseReference dataRef = databaseReference.child(userId).child("Notes");
+        DatabaseReference dataRef = databaseReference.child(userId).child("Ideas");
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -174,10 +167,10 @@ public class HomeFragment extends Fragment {
                     list.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         if (dataSnapshot.exists()) {
-                            NotesModel notesModel = dataSnapshot.getValue(NotesModel.class);
-                            list.add(notesModel);
+                            IdeasModel ideasModel = dataSnapshot.getValue(IdeasModel.class);
+                            list.add(ideasModel);
                         } else {
-                            showAllNotes();
+                            showAllIdeas();
                         }
                     }
                 } else {
@@ -372,7 +365,7 @@ public class HomeFragment extends Fragment {
         recyclerV.setLayoutManager(staggeredGridLayoutManager);
         recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersNote");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
         storageReference = FirebaseStorage.getInstance().getReference("AllUsersImage");
         list = new ArrayList<>();
         progress = view.findViewById(R.id.progress);

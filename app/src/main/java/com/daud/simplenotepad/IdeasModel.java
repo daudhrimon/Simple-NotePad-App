@@ -1,16 +1,16 @@
 package com.daud.simplenotepad;
 
-public class NotesModel {
+public class IdeasModel {
     String Title;
-    String Note;
+    String Idea;
     String Key;
 
-    public NotesModel() {
+    public IdeasModel() {
     }
 
-    public NotesModel(String title, String note, String key) {
+    public IdeasModel(String title, String idea, String key) {
         Title = title;
-        Note = note;
+        Idea = idea;
         Key = key;
     }
 
@@ -22,12 +22,12 @@ public class NotesModel {
         Title = title;
     }
 
-    public String getNote() {
-        return Note;
+    public String getIdea() {
+        return Idea;
     }
 
-    public void setNote(String note) {
-        Note = note;
+    public void setIdea(String idea) {
+        Idea = idea;
     }
 
     public String getKey() {

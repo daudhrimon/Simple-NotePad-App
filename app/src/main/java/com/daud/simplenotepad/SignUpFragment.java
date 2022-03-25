@@ -85,7 +85,7 @@ public class SignUpFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String userId = firebaseAuth.getCurrentUser().getUid();
-                    DatabaseReference profileRef = databaseReference.child("AllUsersNote").child(userId).child("Profile");
+                    DatabaseReference profileRef = databaseReference.child("AllUsersIdea").child(userId).child("Profile");
                     HashMap<String, Object> profileMAp = new HashMap<>();
                     profileMAp.put("Name", nameIn);
                     profileMAp.put("Email", emailIn);

@@ -8,39 +8,46 @@
     <RelativeLayout
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
-        android:background="@drawable/bottom_shade"
+        android:layout_height="60dp"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/backIBtn"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginStart="5dp"
+            android:backgroundTint="#01FFFFFF"
             android:src="@drawable/ic_baseline_arrow_back_24"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
         <ImageButton
             android:id="@+id/saveIBtn"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_marginEnd="5dp"
+            android:backgroundTint="#01FFFFFF"
             android:src="@drawable/ic_baseline_save_24"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </RelativeLayout>
 
+    <ProgressBar
+        android:id="@+id/topLine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_below="@+id/toolBar" />
+
     <LinearLayout
         android:id="@+id/screen"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@id/toolBar"
-        android:layout_alignParentBottom="true"
-        android:padding="5dp">
+        android:layout_below="@id/topLine"
+        android:layout_alignParentBottom="true">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -53,32 +60,28 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/titleEt"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_margin="5dp"
-                    android:background="#FFFFFF"
                     android:focusableInTouchMode="true"
                     android:hint="Title"
-                    android:padding="5dp"
-                    android:textColor="#000000"
+                    android:padding="0dp"
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/noteEt"
+                    android:id="@+id/ideaEt"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
-                    android:background="#FFFFFF"
-                    android:focusableInTouchMode="true"
                     android:gravity="top"
-                    android:hint="Note"
+                    android:hint="Idea"
+                    android:textSize="17dp"
                     android:inputType="textMultiLine"
                     android:minHeight="350dp"
-                    android:padding="3dp"
+                    android:padding="0dp"
                     android:textColor="#000000" />
 
             </LinearLayout>
