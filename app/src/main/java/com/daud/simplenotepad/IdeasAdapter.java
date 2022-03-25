@@ -3,7 +3,6 @@ package com.daud.simplenotepad;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,25 +25,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHolder> {
+public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHolder> {
     private Context context;
     private List<IdeasModel> list;
-    NotesAdapter.NotesViewHolder notesViewHolder;
+    IdeasViewHolder ideasViewHolder;
 
-    public NotesAdapter(Context context, List<IdeasModel> list) {
+    public IdeasAdapter(Context context, List<IdeasModel> list) {
         this.context = context;
         this.list = list;
     }
 
     @NonNull
     @Override
-    public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public IdeasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_view_holder_layout, parent, false);
-        return new NotesViewHolder(view);
+        return new IdeasViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull IdeasViewHolder holder, int position) {
         holder.titleTv.setText(list.get(position).getTitle());
         holder.ideaTv.setText(list.get(position).getIdea());
         String Key = list.get(position).getKey();
@@ -81,13 +80,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         return list.size();
     }
 
-    public class NotesViewHolder extends RecyclerView.ViewHolder {
+    public class IdeasViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTv, ideaTv;
         private LinearLayout ideaCard;
         private FirebaseAuth firebaseAuth;
         private DatabaseReference databaseReference;
 
-        public NotesViewHolder(@NonNull View itemView) {
+        public IdeasViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTv = itemView.findViewById(R.id.titleTvNvh);
             ideaTv = itemView.findViewById(R.id.ideaTvNvh);
@@ -98,7 +97,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         }
     }
 
-    private void itemViewOnclick(NotesViewHolder holder, int position) {
+    private void itemViewOnclick(IdeasViewHolder holder, int position) {
         MainActivity.editor.putString("Title", list.get(position).getTitle().toString());
         MainActivity.editor.putString("Idea", list.get(position).getIdea().toString());
         MainActivity.editor.putString("Key", list.get(position).getKey().toString());
@@ -110,10 +109,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
                 .addToBackStack(null).commit();
     }
 
-    private void itemViewOnLongClick(NotesViewHolder holder, String key) {
+    private void itemViewOnLongClick(IdeasViewHolder holder, String key) {
         String userId = MainActivity.sharedPreferences.getString("userId", "");
         String Name = MainActivity.sharedPreferences.getString("Name", "");
-        DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Notes").child(key);
+        DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Ideas").child(key);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

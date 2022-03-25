@@ -177,7 +177,7 @@ public class HomeFragment extends Fragment {
                     recyclerV.setVisibility(View.GONE);
                     emptyNotice.setVisibility(View.VISIBLE);
                 }
-                recyclerV.setAdapter(new NotesAdapter(getContext(), list));
+                recyclerV.setAdapter(new IdeasAdapter(getContext(), list));
             }
 
             @Override

@@ -45,11 +45,6 @@ public class TaskFragment extends Fragment {
         //saveBtn OnClick
         saveIBtn.setOnClickListener(view1 -> {
             String titleIn = titleEt.getText().toString();
-            if (titleIn.isEmpty()) {
-                titleEt.setError("You Can't Save a Idea Without Title");
-                titleEt.requestFocus();
-                return;
-            }
             String ideaIn = ideaEt.getText().toString();
             if (State.equals("Edit")) {
                 updateIdeaToFirebase(titleIn, ideaIn);
