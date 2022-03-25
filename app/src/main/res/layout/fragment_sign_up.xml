@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignUpFragment"
-    android:background="#FFCDD2">
+    android:background="#FFCDD2"
+    tools:context=".SignUpFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

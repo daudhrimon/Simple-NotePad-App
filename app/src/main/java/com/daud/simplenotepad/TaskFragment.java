@@ -58,7 +58,7 @@ public class TaskFragment extends Fragment {
 
         //saveBtn OnClick
         saveIBtn.setOnClickListener(view1 -> {
-            if (State.equals("Edit")){
+            if (State.equals("Edit")) {
                 String titleIn = titleEt.getText().toString();
                 if (titleIn.isEmpty()) {
                     titleEt.setError("You Can't Save a Note Without Title");
@@ -66,10 +66,10 @@ public class TaskFragment extends Fragment {
                     return;
                 } else {
                     String noteIn = noteEt.getText().toString();
-                    updateNoteToFirebase(titleIn,noteIn);
+                    updateNoteToFirebase(titleIn, noteIn);
                 }
 
-            }else{
+            } else {
                 String titleIn = titleEt.getText().toString();
                 if (titleIn.isEmpty()) {
                     titleEt.setError("You Can't Save a Note Without Title");
@@ -97,8 +97,8 @@ public class TaskFragment extends Fragment {
 
     private void checkStateAndDoCustomize() {
         if (State.equals("Edit")) {
-            String Title = sharedPreferences.getString("Title","");
-            String Note = sharedPreferences.getString("Note","");
+            String Title = sharedPreferences.getString("Title", "");
+            String Note = sharedPreferences.getString("Note", "");
 
             titleEt.setText(Title);
             noteEt.setText(Note);
@@ -106,22 +106,22 @@ public class TaskFragment extends Fragment {
     }
 
     private void updateNoteToFirebase(String titleIn, String noteIn) {
-        String Key = sharedPreferences.getString("Key","");
+        String Key = sharedPreferences.getString("Key", "");
         DatabaseReference updateNoteRef = databaseReference.child(userId).child("Notes").child(Key);
-        HashMap<String,Object> noteMap = new HashMap<>();
-        noteMap.put("Title",titleIn);
-        noteMap.put("Note",noteIn);
-        noteMap.put("Key",Key);
+        HashMap<String, Object> noteMap = new HashMap<>();
+        noteMap.put("Title", titleIn);
+        noteMap.put("Note", noteIn);
+        noteMap.put("Key", Key);
         updateNoteRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(getContext(), "Dear..."+ userName +" Your Note Updated Successfully", Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Dear..." + userName + " Your Note Updated Successfully", Toast.LENGTH_SHORT).show();
                     getParentFragmentManager().popBackStack();
                     hideKeyboard(getActivity());
                     MainActivity.setSharedPreferencesEmpty();
-                }else{
-                    Toast.makeText(getContext(), ""+task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -131,19 +131,19 @@ public class TaskFragment extends Fragment {
     private void PushNoteToFirebase(String titleIn, String noteIn) {
         DatabaseReference pushNoteRef = databaseReference.child(userId).child("Notes").push();
         String pushKey = pushNoteRef.getKey().toString();
-        HashMap<String,Object> noteMap = new HashMap<>();
-        noteMap.put("Title",titleIn);
-        noteMap.put("Note",noteIn);
-        noteMap.put("Key",pushKey);
+        HashMap<String, Object> noteMap = new HashMap<>();
+        noteMap.put("Title", titleIn);
+        noteMap.put("Note", noteIn);
+        noteMap.put("Key", pushKey);
         pushNoteRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(getContext(), "Dear..."+ userName +" Your Note Saved Successfully", Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Dear..." + userName + " Your Note Saved Successfully", Toast.LENGTH_SHORT).show();
                     getParentFragmentManager().popBackStack();
                     hideKeyboard(getActivity());
-                }else{
-                    Toast.makeText(getContext(), ""+task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -111,16 +111,16 @@ public class HomeFragment extends Fragment {
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
-                if (result!=null && result.getData()!=null){
-                   if (ACTION.equals("camera")){
-                       Bundle bundle = result.getData().getExtras();
-                       Bitmap imgBitmap = (Bitmap) bundle.get("data");
-                       Uri imgUri = MainActivity.getImageUri(getActivity(),imgBitmap);
-                       uploadImageFirebaseStorage(imgUri);
-                   }else if (ACTION.equals("gallery")){
-                       Uri imgUri = result.getData().getData();
-                       uploadImageFirebaseStorage(imgUri);
-                   }
+                if (result != null && result.getData() != null) {
+                    if (ACTION.equals("camera")) {
+                        Bundle bundle = result.getData().getExtras();
+                        Bitmap imgBitmap = (Bitmap) bundle.get("data");
+                        Uri imgUri = MainActivity.getImageUri(getActivity(), imgBitmap);
+                        uploadImageFirebaseStorage(imgUri);
+                    } else if (ACTION.equals("gallery")) {
+                        Uri imgUri = result.getData().getData();
+                        uploadImageFirebaseStorage(imgUri);
+                    }
                 }
             }
         });
@@ -133,14 +133,14 @@ public class HomeFragment extends Fragment {
         imageRef.putFile(imgUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                           if (uri!=null){
-                               String imgURL = uri.toString();
-                               uploadImageURLFirebaseDatabase(imgURL);
-                           }
+                            if (uri != null) {
+                                String imgURL = uri.toString();
+                                uploadImageURLFirebaseDatabase(imgURL);
+                            }
                         }
                     });
                 }
@@ -154,9 +154,9 @@ public class HomeFragment extends Fragment {
         imageURLRef.setValue(imgURL).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-               if (task.isSuccessful()){
-                   Toast.makeText(getContext(),userName+" Image Uploaded Successfully",Toast.LENGTH_SHORT).show();
-               }
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), userName + " Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -176,11 +176,11 @@ public class HomeFragment extends Fragment {
                         if (dataSnapshot.exists()) {
                             NotesModel notesModel = dataSnapshot.getValue(NotesModel.class);
                             list.add(notesModel);
-                        }else {
+                        } else {
                             showAllNotes();
                         }
                     }
-                }else {
+                } else {
                     recyclerV.setVisibility(View.GONE);
                     emptyNotice.setVisibility(View.VISIBLE);
                 }
@@ -233,6 +233,7 @@ public class HomeFragment extends Fragment {
                     editor.commit();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
@@ -255,21 +256,21 @@ public class HomeFragment extends Fragment {
         });
 
         updateImage.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(getContext(),updateImage);
-            popupMenu.getMenuInflater().inflate(R.menu.image_picker_menu,popupMenu.getMenu());
+            PopupMenu popupMenu = new PopupMenu(getContext(), updateImage);
+            popupMenu.getMenuInflater().inflate(R.menu.image_picker_menu, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem menuItem) {
-                    switch (menuItem.getItemId()){
+                    switch (menuItem.getItemId()) {
                         case R.id.camera:
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             activityResultLauncher.launch(intent);
-                            ACTION="camera";
+                            ACTION = "camera";
                             break;
                         case R.id.gallery:
                             Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
                             activityResultLauncher.launch(intent1);
-                            ACTION="gallery";
+                            ACTION = "gallery";
                             break;
                     }
                     return false;
@@ -375,6 +376,6 @@ public class HomeFragment extends Fragment {
         storageReference = FirebaseStorage.getInstance().getReference("AllUsersImage");
         list = new ArrayList<>();
         progress = view.findViewById(R.id.progress);
-        userName = sharedPreferences.getString("Name","");
+        userName = sharedPreferences.getString("Name", "");
     }
 }

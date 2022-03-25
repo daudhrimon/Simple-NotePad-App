@@ -41,7 +41,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     @NonNull
     @Override
     public NotesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_view_holder_layout,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_view_holder_layout, parent, false);
         return new NotesViewHolder(view);
     }
 
@@ -51,7 +51,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         holder.noteTv.setText(list.get(position).getNote());
         String Key = list.get(position).getKey();
         holder.itemView.setOnClickListener(view -> {
-            itemViewOnclick(holder,position);
+            itemViewOnclick(holder, position);
         });
 
         holder.itemView.setOnLongClickListener(view -> {
@@ -62,14 +62,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    itemViewOnLongClick(holder,Key);
+                    itemViewOnLongClick(holder, Key);
                     dialogInterface.dismiss();
                 }
             });
             builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                   dialogInterface.dismiss();
+                    dialogInterface.dismiss();
                 }
             });
             builder.show();
@@ -84,10 +84,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
     public class NotesViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleTv,noteTv;
+        private TextView titleTv, noteTv;
         private LinearLayout noteCard;
         private FirebaseAuth firebaseAuth;
         private DatabaseReference databaseReference;
+
         public NotesViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTv = itemView.findViewById(R.id.titleTvNvh);
@@ -100,35 +101,34 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
     }
 
     private void itemViewOnclick(NotesViewHolder holder, int position) {
-        MainActivity.editor.putString("Title",list.get(position).getTitle().toString());
-        MainActivity.editor.putString("Note",list.get(position).getNote().toString());
-        MainActivity.editor.putString("Key",list.get(position).getKey().toString());
-        MainActivity.editor.putString("State","Edit");
+        MainActivity.editor.putString("Title", list.get(position).getTitle().toString());
+        MainActivity.editor.putString("Note", list.get(position).getNote().toString());
+        MainActivity.editor.putString("Key", list.get(position).getKey().toString());
+        MainActivity.editor.putString("State", "Edit");
         MainActivity.editor.commit();
-        ((FragmentActivity)context).getSupportFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right_to_left,R.anim.fade_out,R.anim.fade_in,R.anim.slide_out_left_to_right)
-                .replace(R.id.FrameLay,new TaskFragment())
+        ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right_to_left, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_left_to_right)
+                .replace(R.id.FrameLay, new TaskFragment())
                 .addToBackStack(null).commit();
     }
 
     private void itemViewOnLongClick(NotesViewHolder holder, String key) {
-        String userId = MainActivity.sharedPreferences.getString("userId","");
-        String Name = MainActivity.sharedPreferences.getString("Name","");
+        String userId = MainActivity.sharedPreferences.getString("userId", "");
+        String Name = MainActivity.sharedPreferences.getString("Name", "");
         DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Notes").child(key);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    Toast.makeText(((FragmentActivity)context),Name+" Your Selected Note Deleted Successfully",Toast.LENGTH_SHORT).show();
+                if (task.isSuccessful()) {
+                    Toast.makeText(((FragmentActivity) context), Name + " Your Selected Note Deleted Successfully", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
     }
 
-    private String getRandomColor()
-    {
-        List<String> colorCode=new ArrayList<>();
+    private String getRandomColor() {
+        List<String> colorCode = new ArrayList<>();
         colorCode.add("#DFFF00");
         colorCode.add("#FFBF00");
         colorCode.add("#FF7F50");
@@ -138,8 +138,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
         colorCode.add("#6495ED");
         colorCode.add("#CCCCFF");
 
-        Random random=new Random();
-        int number=random.nextInt(colorCode.size());
+        Random random = new Random();
+        int number = random.nextInt(colorCode.size());
         return colorCode.get(number);
     }
 }

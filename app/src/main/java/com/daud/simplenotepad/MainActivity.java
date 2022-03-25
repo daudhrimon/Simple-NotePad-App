@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("State", "");
         editor.commit();
     }
+
     // Bitmap to Uri Converter
     public static Uri getImageUri(Activity inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();

@@ -30,8 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class SignInFragment extends Fragment {
-    private TextInputEditText emailEt,passwordEt;
-    private MaterialButton signInBtn,signUpBtn;
+    private TextInputEditText emailEt, passwordEt;
+    private MaterialButton signInBtn, signUpBtn;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     private ProgressBar progress;
@@ -50,19 +50,19 @@ public class SignInFragment extends Fragment {
             String passwordInSin = passwordEt.getText().toString();
 
             //checking the validity of the email
-            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailInSin).matches()) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailInSin).matches()) {
                 emailEt.setError("Enter a valid email address");
                 emailEt.requestFocus();
                 return;
             }
             //checking the validity of the password
-            if(passwordInSin.length() < 6) {
+            if (passwordInSin.length() < 6) {
                 passwordEt.setError("Enter at least 6 (six) character");
                 passwordEt.requestFocus();
                 return;
             }
 
-            signInBtnAuth(emailInSin,passwordInSin);
+            signInBtnAuth(emailInSin, passwordInSin);
 
         });
 
@@ -71,7 +71,7 @@ public class SignInFragment extends Fragment {
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right_to_left, R.anim.fade_out,
                             R.anim.fade_in,
-                            R.anim.slide_out_left_to_right).replace(R.id.FrameLay,new SignUpFragment())
+                            R.anim.slide_out_left_to_right).replace(R.id.FrameLay, new SignUpFragment())
                     .addToBackStack(null).commit();
         });
 
@@ -82,28 +82,28 @@ public class SignInFragment extends Fragment {
     private void signInBtnAuth(String emailInSin, String passwordInSin) {
         //FirebaseAuth
         progress.setVisibility(View.VISIBLE);
-        firebaseAuth.signInWithEmailAndPassword(emailInSin,passwordInSin).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(emailInSin, passwordInSin).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     DatabaseReference dataRef = databaseReference.child(userId).child("Profile").child("Name");
                     dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists()){
+                            if (snapshot.exists()) {
                                 userName = snapshot.getValue(String.class);
-                            }else{
+                            } else {
                                 userName = "User";
                             }
-                            editor.putString("userId",userId);
-                            editor.putString("Name",userName);
+                            editor.putString("userId", userId);
+                            editor.putString("Name", userName);
                             editor.commit();
                             progress.setVisibility(View.INVISIBLE);
 
                             //AlertDialog
                             AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                            View alertView = LayoutInflater.from(getContext()).inflate(R.layout.save_pass_layout,null);
+                            View alertView = LayoutInflater.from(getContext()).inflate(R.layout.save_pass_layout, null);
                             //initialize alertView Components
                             TextView userNameTv = alertView.findViewById(R.id.userNameTv);
                             MaterialButton yesBtn = alertView.findViewById(R.id.yesBtn);
@@ -114,12 +114,12 @@ public class SignInFragment extends Fragment {
 
                             //yesBtn OnClick
                             yesBtn.setOnClickListener(view2 -> {
-                                editor.putString("SignIn","true");
+                                editor.putString("SignIn", "true");
                                 editor.commit();
                                 getParentFragmentManager()
                                         .beginTransaction()
-                                        .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
-                                        .replace(R.id.FrameLay,new HomeFragment())
+                                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
+                                        .replace(R.id.FrameLay, new HomeFragment())
                                         .commit();
                                 alertDialog.dismiss();
                             });
@@ -128,8 +128,8 @@ public class SignInFragment extends Fragment {
                             noBtn.setOnClickListener(view2 -> {
                                 getParentFragmentManager()
                                         .beginTransaction()
-                                        .setCustomAnimations(R.anim.slide_up,R.anim.fade_out)
-                                        .replace(R.id.FrameLay,new HomeFragment())
+                                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
+                                        .replace(R.id.FrameLay, new HomeFragment())
                                         .commit();
                                 alertDialog.dismiss();
                             });
@@ -140,12 +140,12 @@ public class SignInFragment extends Fragment {
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             progress.setVisibility(View.GONE);
-                            Toast.makeText(getContext(),""+error.getMessage().toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "" + error.getMessage().toString(), Toast.LENGTH_SHORT).show();
                         }
                     });
-                }else{
+                } else {
                     progress.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),""+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

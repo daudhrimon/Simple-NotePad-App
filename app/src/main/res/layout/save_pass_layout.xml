@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="7dp"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp">
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="top"
+            android:layout_weight="1"
             android:scaleType="centerCrop"
-            android:src="@drawable/assistant"/>
+            android:src="@drawable/assistant" />
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_weight="2"
             android:background="@drawable/button_shape"
             android:backgroundTint="#FFCDD2"
-            >
+            android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="Hello...Dear..."
                 android:fontFamily="sans-serif-black"
-                android:textSize="18dp"
-                android:textAlignment="center"/>
+                android:text="Hello...Dear..."
+                android:textAlignment="center"
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/userNameTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:text="User"
-                android:textStyle="bold"
-                android:textAlignment="center"
                 android:fontFamily="sans-serif-black"
-                android:textSize="19dp"/>
+                android:text="User"
+                android:textAlignment="center"
+                android:textSize="19dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dp"
-                android:text="Do You Want To Save Your Password ?"
                 android:fontFamily="sans-serif-black"
+                android:text="Do You Want To Save Your Password ?"
                 android:textAlignment="center"
-                android:textSize="20dp"/>
+                android:textSize="20dp" />
 
         </LinearLayout>
 
@@ -65,39 +65,39 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
         android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_marginBottom="3dp">
+        android:weightSum="2">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/noBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="No"
+            android:layout_weight="1"
+            android:backgroundTint="#FFCDD2"
             android:fontFamily="sans-serif-black"
+            android:text="No"
             android:textAllCaps="false"
             android:textColor="#91000000"
-            android:textSize="18dp"
-            android:backgroundTint="#FFCDD2" />
+            android:textSize="18dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/yesBtn"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="Yes"
+            android:layout_weight="1"
+            android:backgroundTint="#FFCDD2"
             android:fontFamily="sans-serif-black"
+            android:text="Yes"
             android:textAllCaps="false"
             android:textColor="#91000000"
-            android:textSize="18dp"
-            android:backgroundTint="#FFCDD2" />
+            android:textSize="18dp" />
 
     </LinearLayout>
 

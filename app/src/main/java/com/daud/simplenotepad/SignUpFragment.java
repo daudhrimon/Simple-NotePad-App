@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class SignUpFragment extends Fragment {
-    private TextInputEditText nameEt, emailEt,passwordEt, phoneEt;
+    private TextInputEditText nameEt, emailEt, passwordEt, phoneEt;
     private MaterialButton signUpnBt, signInBtn;
     private ProgressBar progress;
     private FirebaseAuth firebaseAuth;
@@ -42,33 +42,33 @@ public class SignUpFragment extends Fragment {
             String emailIn = emailEt.getText().toString();
             String passwordIn = passwordEt.getText().toString();
 
-            if (nameIn.isEmpty()){
+            if (nameIn.isEmpty()) {
                 nameEt.setError("Enter Name");
                 nameEt.requestFocus();
                 return;
             }
             //checking the validity of the email
-            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(emailIn).matches()) {
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailIn).matches()) {
                 emailEt.setError("Enter a valid email address");
                 emailEt.requestFocus();
                 return;
             }
             //checking the validity of the password
-            if(passwordIn.length() < 6) {
+            if (passwordIn.length() < 6) {
                 passwordEt.setError("Enter at least 6 (six) character");
                 passwordEt.requestFocus();
                 return;
             }
 
-            SignUpBtnAuth(nameIn,emailIn,passwordIn);
+            SignUpBtnAuth(nameIn, emailIn, passwordIn);
 
         });
 
         signInBtn.setOnClickListener(view1 -> {
             getParentFragmentManager()
                     .beginTransaction()
-                    .setCustomAnimations(R.anim.fade_in,R.anim.slide_out_left_to_right)
-                    .replace(R.id.FrameLay,new SignInFragment())
+                    .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left_to_right)
+                    .replace(R.id.FrameLay, new SignInFragment())
                     .commit();
         });
 
@@ -79,36 +79,36 @@ public class SignUpFragment extends Fragment {
     private void SignUpBtnAuth(String nameIn, String emailIn, String passwordIN) {
         //FirebaseAuth
         progress.setVisibility(View.VISIBLE);
-        firebaseAuth.createUserWithEmailAndPassword(emailIn,passwordIN).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(emailIn, passwordIN).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     String userId = firebaseAuth.getCurrentUser().getUid();
                     DatabaseReference profileRef = databaseReference.child("AllUsersNote").child(userId).child("Profile");
-                    HashMap<String,Object> profileMAp = new HashMap<>();
-                    profileMAp.put("Name",nameIn);
-                    profileMAp.put("Email",emailIn);
-                    profileMAp.put("userId",userId);
+                    HashMap<String, Object> profileMAp = new HashMap<>();
+                    profileMAp.put("Name", nameIn);
+                    profileMAp.put("Email", emailIn);
+                    profileMAp.put("userId", userId);
                     profileRef.setValue(profileMAp).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isComplete()){
+                            if (task.isComplete()) {
                                 progress.setVisibility(View.GONE);
-                                Toast.makeText(getContext(),"Sign Up Successful",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Sign Up Successful", Toast.LENGTH_SHORT).show();
                                 getParentFragmentManager()
                                         .beginTransaction()
-                                        .setCustomAnimations(R.anim.fade_in,R.anim.slide_out_left_to_right)
-                                        .replace(R.id.FrameLay,new SignInFragment())
+                                        .setCustomAnimations(R.anim.fade_in, R.anim.slide_out_left_to_right)
+                                        .replace(R.id.FrameLay, new SignInFragment())
                                         .commit();
-                            }else{
+                            } else {
                                 progress.setVisibility(View.GONE);
-                                Toast.makeText(getContext(),""+task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-                }else{
+                } else {
                     progress.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), ""+task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
