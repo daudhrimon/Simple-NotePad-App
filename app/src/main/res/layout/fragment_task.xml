@@ -66,8 +66,7 @@
                     android:focusableInTouchMode="true"
                     android:hint="Title"
                     android:padding="0dp"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
+                    android:textSize="20dp" />
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ideaEt"

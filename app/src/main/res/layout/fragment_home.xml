@@ -46,7 +46,7 @@
                 android:layout_centerVertical="true"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/idea_lite"
-                app:borderWidth="1dp"
+                app:borderWidth="0.5dp"
                 app:fabSize="mini"
                 tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
@@ -105,7 +105,7 @@
         android:layout_marginBottom="25dp"
         android:backgroundTint="@color/MyColor"
         android:src="@drawable/plus"
-        app:borderWidth="5dp"
+        app:borderWidth="1dp"
         app:fabSize="normal"
         tools:ignore="SpeakableTextPresentCheck" />
 

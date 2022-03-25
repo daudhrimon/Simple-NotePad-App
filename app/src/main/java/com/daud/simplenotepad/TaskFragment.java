@@ -130,6 +130,6 @@ public class TaskFragment extends Fragment {
         backIBtn = view.findViewById(R.id.backIBtn);
         saveIBtn = view.findViewById(R.id.saveIBtn);
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersNote");
+        databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
     }
 }
