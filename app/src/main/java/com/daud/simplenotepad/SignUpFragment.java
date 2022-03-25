@@ -38,6 +38,7 @@ public class SignUpFragment extends Fragment {
         initial(view);
 
         signUpnBt.setOnClickListener(view1 -> {
+            MainActivity.hideKeyboard(getActivity());
             String nameIn = nameEt.getText().toString();
             String emailIn = emailEt.getText().toString();
             String passwordIn = passwordEt.getText().toString();

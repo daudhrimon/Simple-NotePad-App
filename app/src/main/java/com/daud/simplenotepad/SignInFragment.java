@@ -1,6 +1,7 @@
 package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.MainActivity.editor;
+import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -46,6 +47,7 @@ public class SignInFragment extends Fragment {
         initial(view);
 
         signInBtn.setOnClickListener(view1 -> {
+            MainActivity.hideKeyboard(getActivity());
             String emailInSin = emailEt.getText().toString();
             String passwordInSin = passwordEt.getText().toString();
 
