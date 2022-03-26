@@ -90,18 +90,43 @@ public class HomeFragment extends Fragment {
 
         // ON CLICKS //
 
-        // ADD Button OnClick
-        addBtn.setOnClickListener(view1 -> {
-            //This Method Will Load Add idea's Page
-            ///////////////////////////////////////
-            addBtnOnclick();
-            ///////////////////////////////////////
+        //SearchView OnTextChanged or OnQueryTextListener //
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            List<IdeasModel> searchList = new ArrayList<>();
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (newText!=null || !newText.isEmpty()){
+                    searchList.clear();
+                    for (int i = 0; i < list.size(); i++){
+                        if (list.get(i).getTitle().contains(newText) || list.get(i).getIdea().contains(newText)){
+                            searchList.add(list.get(i));
+                        }
+                    }
+                    recyclerV.setAdapter(new IdeasAdapter(getContext(),searchList));
+                }else{
+                    recyclerV.setAdapter(new IdeasAdapter(getContext(),list));
+                }
+                return true;
+            }
         });
 
         // Profile ToolBar CircleImageView OnClick
         profileIcon.setOnClickListener(view1 -> {
             // Profile icon On Click Method
             profileIconOnClick();
+        });
+
+        // ADD Button OnClick
+        addBtn.setOnClickListener(view1 -> {
+            //This Method Will Load Add idea's Page
+            ///////////////////////////////////////
+            addBtnOnclick();
+            ///////////////////////////////////////
         });
 
         // Activity Result Launcher Method
@@ -184,15 +209,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-
-    //Plus Button OnClick //////////////////////////////////////////////////////////////////////////
-    private void addBtnOnclick() {
-        editor.putString("State", "Add").commit();
-        getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
-                R.anim.fade_out,
-                R.anim.fade_in,
-                R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
-    }
+    // ON CLICK METHODS ////////////////////////////////////////////////////////////////////////////
 
 
     // Profile icon ToolBar CircleImageView OnClick // Profile AlertDialog //
@@ -244,6 +261,16 @@ public class HomeFragment extends Fragment {
         wlp.gravity = Gravity.TOP;
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
+    }
+
+
+    //Plus Button OnClick //////////////////////////////////////////////////////////////////////////
+    private void addBtnOnclick() {
+        editor.putString("State", "Add").commit();
+        getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
     }
 
 
@@ -420,6 +447,7 @@ public class HomeFragment extends Fragment {
     // Initialization Method
     private void initialize(View view) {
         profileIcon = view.findViewById(R.id.profileIcon);
+        searchView = view.findViewById(R.id.searchView);
         recyclerV = view.findViewById(R.id.recyclerV);
         addBtn = view.findViewById(R.id.addBtn);
         emptyNotice = view.findViewById(R.id.emptyNotice);

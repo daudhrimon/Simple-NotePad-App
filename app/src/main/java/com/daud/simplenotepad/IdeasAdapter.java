@@ -91,7 +91,7 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
             titleTv = itemView.findViewById(R.id.titleTvNvh);
             ideaTv = itemView.findViewById(R.id.ideaTvNvh);
             ideaCard = itemView.findViewById(R.id.ideaCard);
-            ideaCard.setBackgroundColor(Color.parseColor(getRandomColor()));
+            //ideaCard.setBackgroundColor(Color.parseColor(getRandomColor()));
             firebaseAuth = FirebaseAuth.getInstance();
             databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
         }

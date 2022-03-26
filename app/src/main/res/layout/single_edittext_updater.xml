@@ -15,8 +15,8 @@
 
     <ImageButton
         android:id="@+id/cancelBtn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"
