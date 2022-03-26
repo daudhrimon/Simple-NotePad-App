@@ -1,7 +1,7 @@
 package com.daud.simplenotepad;
 
+import static com.daud.simplenotepad.HomeFragment.databaseReference;
 import static com.daud.simplenotepad.HomeFragment.userId;
-import static com.daud.simplenotepad.HomeFragment.userName;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
@@ -28,8 +28,6 @@ import java.util.HashMap;
 public class TaskFragment extends Fragment {
     private TextInputEditText titleEt, ideaEt;
     private ImageButton backIBtn, saveIBtn;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
     private String State;
 
     @Override
@@ -37,19 +35,30 @@ public class TaskFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_task, container, false);
+
         //initialization
         initial(view);
-        State = sharedPreferences.getString("State", "Edit");
+
+        // This Method Will Check State that this Fragment use for
+        // Add idea or View And Edit Idea
         checkStateAndDoCustomize();
 
-        //saveBtn OnClick
+        // ON CLICKS //
+
+        //save Button OnClick
         saveIBtn.setOnClickListener(view1 -> {
             String titleIn = titleEt.getText().toString();
             String ideaIn = ideaEt.getText().toString();
-            if (State.equals("Edit")) {
-                updateIdeaToFirebase(titleIn, ideaIn);
-            }else{
-                PushIdeaToFirebase(titleIn, ideaIn);
+            if (titleIn.isEmpty() && ideaIn.isEmpty()) {
+                Toast.makeText(getContext(), "You cant save a empty idea", Toast.LENGTH_SHORT).show();
+            } else {
+                if (State.equals("Edit")) {
+                    // This Method Will Update idea
+                    updateIdeaToFirebase(titleIn, ideaIn);
+                } else {
+                    // This Method Will Push New Added idea
+                    pushIdeaToFirebase(titleIn, ideaIn);
+                }
             }
         });
 
@@ -57,14 +66,15 @@ public class TaskFragment extends Fragment {
         backIBtn.setOnClickListener(view1 -> {
             getParentFragmentManager().popBackStack();
             MainActivity.hideKeyboard(getActivity());
-            MainActivity.setSharedPreferencesEmpty();
         });
-
-        //////////////////////////////////////////////////
 
         return view;
     }
 
+    // METHODS //
+
+    // This Method Will Check State that this Fragment use for
+    // Add idea or View And Edit Idea
     private void checkStateAndDoCustomize() {
         if (State.equals("Edit")) {
             String Title = sharedPreferences.getString("Title", "");
@@ -74,6 +84,8 @@ public class TaskFragment extends Fragment {
         }
     }
 
+
+    //Update Idea To Firebase Method
     private void updateIdeaToFirebase(String titleIn, String ideaIn) {
         String Key = sharedPreferences.getString("Key", "");
         DatabaseReference updateNoteRef = databaseReference.child(userId).child("Ideas").child(Key);
@@ -85,10 +97,9 @@ public class TaskFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Dear..." + userName + " Your Idea Updated Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Your idea updated successfully", Toast.LENGTH_SHORT).show();
                     getParentFragmentManager().popBackStack();
                     hideKeyboard(getActivity());
-                    MainActivity.setSharedPreferencesEmpty();
                 } else {
                     Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
@@ -96,8 +107,9 @@ public class TaskFragment extends Fragment {
         });
     }
 
+
     //Push Note To Firebase Method
-    private void PushIdeaToFirebase(String titleIn, String ideaIn) {
+    private void pushIdeaToFirebase(String titleIn, String ideaIn) {
         DatabaseReference pushNoteRef = databaseReference.child(userId).child("Ideas").push();
         String pushKey = pushNoteRef.getKey().toString();
         HashMap<String, Object> noteMap = new HashMap<>();
@@ -108,7 +120,7 @@ public class TaskFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Dear..." + userName + " Your Idea Saved Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Your idea Saved successfully", Toast.LENGTH_SHORT).show();
                     getParentFragmentManager().popBackStack();
                     hideKeyboard(getActivity());
                 } else {
@@ -118,13 +130,13 @@ public class TaskFragment extends Fragment {
         });
     }
 
+
     //initialization
     private void initial(View view) {
         titleEt = view.findViewById(R.id.titleEt);
         ideaEt = view.findViewById(R.id.ideaEt);
         backIBtn = view.findViewById(R.id.backIBtn);
         saveIBtn = view.findViewById(R.id.saveIBtn);
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
+        State = sharedPreferences.getString("State", "Edit");
     }
 }

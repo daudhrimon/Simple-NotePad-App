@@ -59,19 +59,17 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeFragment extends Fragment {
-    private FloatingActionButton profileIcon;
+    private CircleImageView profileIcon;
     private SearchView searchView;
     private RecyclerView recyclerV;
     private LinearLayout emptyNotice;
     private FloatingActionButton addBtn;
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
+    public static FirebaseAuth firebaseAuth;
+    public static DatabaseReference databaseReference;
     private StorageReference storageReference;
     private List<IdeasModel> list;
     public static String userId;
-    public static String userName;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
-    private ProgressBar progress;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private String ACTION;
 
@@ -80,27 +78,33 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
         // initialize
-        initial(view);
-        // Show Data RecyclerView
+        initialize(view);
+
+        // Show All Ideas From Firebase On HOME with RecyclerView
         showAllIdeas();
 
-        //Plus Fab OnClick
+        // get ToolBars Profile Icon Image from Firebase
+        getProfileIconImage();
+
+        // ON CLICKS //
+
+        // ADD Button OnClick
         addBtn.setOnClickListener(view1 -> {
-            editor.putString("State", "Add").commit();
-            getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
-                    R.anim.fade_out,
-                    R.anim.fade_in,
-                    R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
+            //This Method Will Load Add idea's Page
+            ///////////////////////////////////////
+            addBtnOnclick();
+            ///////////////////////////////////////
         });
+
         // Profile ToolBar CircleImageView OnClick
         profileIcon.setOnClickListener(view1 -> {
+            // Profile icon On Click Method
             profileIconOnClick();
         });
 
-        /////////////////////////////////////
-        // Activity Result Launcher Method //
-        /////////////////////////////////////
+        // Activity Result Launcher Method
         activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
@@ -109,9 +113,11 @@ public class HomeFragment extends Fragment {
                         Bundle bundle = result.getData().getExtras();
                         Bitmap imgBitmap = (Bitmap) bundle.get("data");
                         Uri imgUri = MainActivity.getImageUri(getActivity(), imgBitmap);
+                        // This Method Will Upload Selected IMAGE By User
                         uploadImageFirebaseStorage(imgUri);
                     } else if (ACTION.equals("gallery")) {
                         Uri imgUri = result.getData().getData();
+                        // This Method Will Upload Selected IMAGE By User
                         uploadImageFirebaseStorage(imgUri);
                     }
                 }
@@ -121,42 +127,10 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void uploadImageFirebaseStorage(Uri imgUri) {
-        StorageReference imageRef = storageReference.child(userId);
-        imageRef.putFile(imgUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            if (uri != null) {
-                                String imgURL = uri.toString();
-                                uploadImageURLFirebaseDatabase(imgURL);
-                            }
-                        }
-                    });
-                }
-            }
-        });
+    // METHODS
 
-    }
-
-    private void uploadImageURLFirebaseDatabase(String imgURL) {
-        DatabaseReference imageURLRef = databaseReference.child(userId).child("Profile").child("Image");
-        imageURLRef.setValue(imgURL).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), userName + " Image Uploaded Successfully", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    //Show All Notes
+    // Show All Ideas From Firebase On HOME with RecyclerView //////////////////////////////////////
     private void showAllIdeas() {
-        userId = sharedPreferences.getString("userId", "");
         DatabaseReference dataRef = databaseReference.child(userId).child("Ideas");
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -187,9 +161,42 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // Profile ToolBar CircleImageView OnClick
+
+    // get ToolBars Profile Icon Image from Firebase ///////////////////////////////////////////////
+    private void getProfileIconImage() {
+        DatabaseReference profileIconRef = databaseReference.child(userId).child("Profile").child("Image");
+        profileIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String Image = snapshot.getValue(String.class);
+                    Picasso.get()
+                            .load(Image).placeholder(R.drawable.ic_baseline_person_24)
+                            .error(R.drawable.ic_baseline_person_24).into(profileIcon);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
+    //Plus Button OnClick //////////////////////////////////////////////////////////////////////////
+    private void addBtnOnclick() {
+        editor.putString("State", "Add").commit();
+        getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
+                R.anim.fade_out,
+                R.anim.fade_in,
+                R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
+    }
+
+
+    // Profile icon ToolBar CircleImageView OnClick // Profile AlertDialog //
     private void profileIconOnClick() {
-        //////////////////////////////////////////////////////////////////////////////////////////////
         AlertDialog profileDialog = new AlertDialog.Builder(getContext()).create();
         View alertView = LayoutInflater.from(getContext()).inflate(R.layout.profile_layout, null);
         //initialize alertView Components
@@ -202,74 +209,32 @@ public class HomeFragment extends Fragment {
         ImageButton cancelIb = alertView.findViewById(R.id.cancelIb);
         FloatingActionButton updateImage = alertView.findViewById(R.id.updateImage);
         profileDialog.setView(alertView);
-        ///////////////////////////////////////////////////////////////////
-        nameTv.setText(sharedPreferences.getString("Name", ""));
-        emailTv.setText(sharedPreferences.getString("Email", ""));
 
-        DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
-        profileRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
-                    nameTv.setText(profileModel.getName());
-                    emailTv.setText(profileModel.getEmail());
+        // This Method Will Get User PROFILE data FROM FIREBASE
+        getProfileData(nameTv, emailTv, profileCiv);
 
-                    Picasso.get()
-                            .load(profileModel.getImage())
-                            .placeholder(R.drawable.ic_baseline_person_24)
-                            .error(R.drawable.ic_baseline_person_24)
-                            .into(profileCiv);
-
-                    editor.putString("Name", profileModel.getName());
-                    editor.putString("Email", profileModel.getEmail());
-                    editor.commit();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-        // CancelBtn Onclick
+        // AlertDialog CancelBtn Onclick
         cancelIb.setOnClickListener(view -> {
             hideKeyboard(getActivity());
             profileDialog.dismiss();
         });
 
-        // SignOut Fab OnClick
-        signOutBtn.setOnClickListener(view -> {
-            signOutBtnOnClickFromDialog(profileDialog);
+        // AlertDialog Update Image OnClick
+        updateImage.setOnClickListener(view -> {
+            // This method Will show A PopUp And Start Acton Camera Or Gallery
+            updateImageToFirebase(updateImage);
         });
 
-        // UPDATE Name OnClick AlertDialog
+        // AlertDialog UPDATE Name OnClick
         updateName.setOnClickListener(view -> {
+            // This Method Will Show a Custom AlertDialog for Update User's Name
             updateNameOnClickMethod();
         });
 
-        updateImage.setOnClickListener(view -> {
-            PopupMenu popupMenu = new PopupMenu(getContext(), updateImage);
-            popupMenu.getMenuInflater().inflate(R.menu.image_picker_menu, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem menuItem) {
-                    switch (menuItem.getItemId()) {
-                        case R.id.camera:
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            activityResultLauncher.launch(intent);
-                            ACTION = "camera";
-                            break;
-                        case R.id.gallery:
-                            Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
-                            activityResultLauncher.launch(intent1);
-                            ACTION = "gallery";
-                            break;
-                    }
-                    return false;
-                }
-            });
-            popupMenu.show();
+        // AlertDialog SignOut Floating Action BUTTON OnClick
+        signOutBtn.setOnClickListener(view -> {
+            // This Method Will Show a Custom AlertDialog for Ask SignOut YES or NO
+            signOutBtnOnClickFromDialog(profileDialog);
         });
 
         profileDialog.setCancelable(false);
@@ -282,33 +247,63 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void signOutBtnOnClickFromDialog(AlertDialog profileDialog) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setCancelable(false);
-        builder.setTitle("SignOut Alert !");
-        builder.setMessage("Do You Want To SignOut ?");
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+    // Profile AlertDialog // This Method Will Get User PROFILE data FROM FIREBASE
+    private void getProfileData(TextView nameTv, TextView emailTv, CircleImageView profileCiv) {
+        DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
+        profileRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                editor.putString("SignIn", "False");
-                editor.commit();
-                firebaseAuth.signOut();
-                getParentFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
-                        .replace(R.id.FrameLay, new SignInFragment()).commit();
-                dialogInterface.dismiss();
-                profileDialog.dismiss();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    ProfileModel profileModel = snapshot.getValue(ProfileModel.class);
+
+                    nameTv.setText(profileModel.getName());
+                    emailTv.setText(profileModel.getEmail());
+
+                    Picasso.get()
+                            .load(profileModel.getImage())
+                            .placeholder(R.drawable.ic_baseline_person_24)
+                            .error(R.drawable.ic_baseline_person_24).into(profileCiv);
+                    Picasso.get()
+                            .load(profileModel.getImage()).placeholder(R.drawable.ic_baseline_person_24)
+                            .error(R.drawable.ic_baseline_person_24).into(profileIcon);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
-        builder.show();
     }
 
+
+    // Profile AlertDialog // This method Will show A PopUp And Start Acton Camera Or Gallery
+    private void updateImageToFirebase(FloatingActionButton updateImage) {
+        PopupMenu popupMenu = new PopupMenu(getContext(), updateImage);
+        popupMenu.getMenuInflater().inflate(R.menu.image_picker_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.camera:
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        activityResultLauncher.launch(intent);
+                        ACTION = "camera";
+                        break;
+                    case R.id.gallery:
+                        Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
+                        activityResultLauncher.launch(intent1);
+                        ACTION = "gallery";
+                        break;
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
+
+    // Profile AlertDialog // UPDATE Name OnClick Method
     private void updateNameOnClickMethod() {
         AlertDialog nameDialog = new AlertDialog.Builder(getContext()).create();
         View nameView = LayoutInflater.from(getContext()).inflate(R.layout.single_edittext_updater, null);
@@ -355,7 +350,75 @@ public class HomeFragment extends Fragment {
     }
 
 
-    private void initial(View view) {
+    // Profile AlertDialog // SignOut Floating Action BUTTON OnClick Method
+    private void signOutBtnOnClickFromDialog(AlertDialog profileDialog) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setCancelable(false);
+        builder.setTitle("SignOut Alert !");
+        builder.setMessage("Do You Want To SignOut ?");
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                editor.putString("SignIn", "False");
+                editor.commit();
+                firebaseAuth.signOut();
+                getParentFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
+                        .replace(R.id.FrameLay, new SignInFragment()).commit();
+                dialogInterface.dismiss();
+                profileDialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+
+    // User's Selected IMAGE Upload To Firebase
+    private void uploadImageFirebaseStorage(Uri imgUri) {
+        StorageReference imageRef = storageReference.child(userId);
+        imageRef.putFile(imgUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                if (task.isSuccessful()) {
+                    imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            if (uri != null) {
+                                String imgURL = uri.toString();
+                                // This Method Will Upload image Downloadable Link to Firebase REALTIME DATABASE
+                                uploadImageURLFirebaseDatabase(imgURL);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
+
+    //Image Downloadable Link Upload to Firebase REALTIME DATABASE Method
+    private void uploadImageURLFirebaseDatabase(String imgURL) {
+        DatabaseReference imageURLRef = databaseReference.child(userId).child("Profile").child("Image");
+        imageURLRef.setValue(imgURL).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "Image uploaded successfully", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    // Initialization Method
+    private void initialize(View view) {
         profileIcon = view.findViewById(R.id.profileIcon);
         recyclerV = view.findViewById(R.id.recyclerV);
         addBtn = view.findViewById(R.id.addBtn);
@@ -368,7 +431,6 @@ public class HomeFragment extends Fragment {
         databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
         storageReference = FirebaseStorage.getInstance().getReference("AllUsersImage");
         list = new ArrayList<>();
-        progress = view.findViewById(R.id.progress);
-        userName = sharedPreferences.getString("Name", "");
+        userId = sharedPreferences.getString("userId", "");
     }
 }

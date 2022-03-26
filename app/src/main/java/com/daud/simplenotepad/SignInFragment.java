@@ -1,10 +1,7 @@
 package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.MainActivity.editor;
-import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,7 +47,6 @@ public class SignInFragment extends Fragment {
             MainActivity.hideKeyboard(getActivity());
             String emailInSin = emailEt.getText().toString();
             String passwordInSin = passwordEt.getText().toString();
-
             //checking the validity of the email
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailInSin).matches()) {
                 emailEt.setError("Enter a valid email address");
@@ -64,8 +60,10 @@ public class SignInFragment extends Fragment {
                 return;
             }
 
-            signInBtnAuth(emailInSin, passwordInSin);
-
+            //This Method Will Help To SIGN IN With FirebaseAuth
+            ////////////////////////////////////////////////////
+            signInWithFirebaseAuth(emailInSin, passwordInSin);
+            ////////////////////////////////////////////////////
         });
 
         // signUpBtn OnClick //
@@ -80,8 +78,8 @@ public class SignInFragment extends Fragment {
         return view;
     }
 
-    //SignInBtn Auth Method
-    private void signInBtnAuth(String emailInSin, String passwordInSin) {
+    // Sign In Button On Click Method
+    private void signInWithFirebaseAuth(String emailInSin, String passwordInSin) {
         //FirebaseAuth
         progress.setVisibility(View.VISIBLE);
         firebaseAuth.signInWithEmailAndPassword(emailInSin, passwordInSin).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -98,45 +96,12 @@ public class SignInFragment extends Fragment {
                             } else {
                                 userName = "User";
                             }
-                            editor.putString("userId", userId);
-                            editor.putString("Name", userName);
-                            editor.commit();
                             progress.setVisibility(View.INVISIBLE);
 
-                            //AlertDialog
-                            AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                            View alertView = LayoutInflater.from(getContext()).inflate(R.layout.save_pass_layout, null);
-                            //initialize alertView Components
-                            TextView userNameTv = alertView.findViewById(R.id.userNameTv);
-                            MaterialButton yesBtn = alertView.findViewById(R.id.yesBtn);
-                            MaterialButton noBtn = alertView.findViewById(R.id.noBtn);
-                            alertDialog.setView(alertView);
-                            //Set currentUsers Name
-                            userNameTv.setText(userName);
-
-                            //yesBtn OnClick
-                            yesBtn.setOnClickListener(view2 -> {
-                                editor.putString("SignIn", "true");
-                                editor.commit();
-                                getParentFragmentManager()
-                                        .beginTransaction()
-                                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
-                                        .replace(R.id.FrameLay, new HomeFragment())
-                                        .commit();
-                                alertDialog.dismiss();
-                            });
-
-                            //noBtn OnClick
-                            noBtn.setOnClickListener(view2 -> {
-                                getParentFragmentManager()
-                                        .beginTransaction()
-                                        .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
-                                        .replace(R.id.FrameLay, new HomeFragment())
-                                        .commit();
-                                alertDialog.dismiss();
-                            });
-                            alertDialog.setCancelable(false);
-                            alertDialog.show();
+                            // When SignIn Done This Method Will Ask For Password Save Or Not
+                            /////////////////////////////////////////////////////////////////
+                            passwordSaveDialog(userId);
+                            /////////////////////////////////////////////////////////////////
                         }
 
                         @Override
@@ -151,6 +116,45 @@ public class SignInFragment extends Fragment {
                 }
             }
         });
+    }
+
+    // When SignIn Done This Method Will Ask For Password Save Or Not
+    private void passwordSaveDialog(String userId) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+        View alertView = LayoutInflater.from(getContext()).inflate(R.layout.save_pass_layout, null);
+        //initialize alertView Components
+        TextView userNameTv = alertView.findViewById(R.id.userNameTv);
+        MaterialButton yesBtn = alertView.findViewById(R.id.yesBtn);
+        MaterialButton noBtn = alertView.findViewById(R.id.noBtn);
+        alertDialog.setView(alertView);
+        //Set currentUsers Name
+        userNameTv.setText(userName);
+
+        //yesBtn OnClick
+        yesBtn.setOnClickListener(view2 -> {
+            editor.putString("SignIn", "true");
+            editor.commit();
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
+                    .replace(R.id.FrameLay, new HomeFragment())
+                    .commit();
+            alertDialog.dismiss();
+        });
+
+        //noBtn OnClick
+        noBtn.setOnClickListener(view2 -> {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_up, R.anim.fade_out)
+                    .replace(R.id.FrameLay, new HomeFragment())
+                    .commit();
+            alertDialog.dismiss();
+        });
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+        editor.putString("userId", userId);
+        editor.commit();
     }
 
     //initialization

@@ -26,7 +26,7 @@ public class SignUpFragment extends Fragment {
     private TextInputEditText nameEt, emailEt, passwordEt, phoneEt;
     private MaterialButton signUpnBt, signInBtn;
     private ProgressBar progress;
-    private FirebaseAuth firebaseAuth;
+    public FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
 
     @Override
@@ -42,7 +42,6 @@ public class SignUpFragment extends Fragment {
             String nameIn = nameEt.getText().toString();
             String emailIn = emailEt.getText().toString();
             String passwordIn = passwordEt.getText().toString();
-
             if (nameIn.isEmpty()) {
                 nameEt.setError("Enter Name");
                 nameEt.requestFocus();
@@ -61,8 +60,10 @@ public class SignUpFragment extends Fragment {
                 return;
             }
 
+            //This Method Will Help To SIGN UP With FirebaseAuth
+            ////////////////////////////////////////////////////
             SignUpBtnAuth(nameIn, emailIn, passwordIn);
-
+            ////////////////////////////////////////////////////
         });
 
         signInBtn.setOnClickListener(view1 -> {
@@ -76,7 +77,7 @@ public class SignUpFragment extends Fragment {
         return view;
     }
 
-    // SignUpBtnAuth
+    //This Method Will Help To SIGN UP With FirebaseAuth
     private void SignUpBtnAuth(String nameIn, String emailIn, String passwordIN) {
         //FirebaseAuth
         progress.setVisibility(View.VISIBLE);

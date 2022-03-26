@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         String SignIn = sharedPreferences.getString("SignIn", "");
-
         if (SignIn.equals("true")) {
             getSupportFragmentManager().beginTransaction().replace(R.id.FrameLay, new HomeFragment()).commit();
         } else {
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // For Close Keyboard //
+    // This Method Will Close/Hide Keyboard //
     public static void hideKeyboard(Activity activity) {
         InputMethodManager inputManager = (InputMethodManager) activity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -48,16 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Doing Shared preference Empty //
-    public static void setSharedPreferencesEmpty() {
-        editor.putString("Title", "");
-        editor.putString("Note", "");
-        editor.putString("Key", "");
-        editor.putString("State", "");
-        editor.commit();
-    }
-
-    // Bitmap to Uri Converter
+    // Bitmap to Uri Converter //
     public static Uri getImageUri(Activity inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

@@ -34,8 +34,8 @@
 
             <RelativeLayout
                 android:id="@+id/profileLayout"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
+                android:layout_width="135dp"
+                android:layout_height="135dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp">
 
@@ -43,8 +43,7 @@
                     android:id="@+id/profileCiv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_baseline_person_24"
-                    app:civ_border_color="@color/black" />
+                    android:src="@drawable/ic_baseline_person_24" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/updateImage"
