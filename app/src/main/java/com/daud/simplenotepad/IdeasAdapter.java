@@ -1,5 +1,8 @@
 package com.daud.simplenotepad;
 
+import static com.daud.simplenotepad.HomeFragment.userId;
+import static com.daud.simplenotepad.MainActivity.sharedPreferences;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -47,6 +50,7 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         holder.titleTv.setText(list.get(position).getTitle());
         holder.ideaTv.setText(list.get(position).getIdea());
         String Key = list.get(position).getKey();
+
         holder.itemView.setOnClickListener(view -> {
             itemViewOnclick(holder, position);
         });
@@ -83,7 +87,6 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     public class IdeasViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTv, ideaTv;
         private LinearLayout ideaCard;
-        private FirebaseAuth firebaseAuth;
         private DatabaseReference databaseReference;
 
         public IdeasViewHolder(@NonNull View itemView) {
@@ -91,9 +94,9 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
             titleTv = itemView.findViewById(R.id.titleTvNvh);
             ideaTv = itemView.findViewById(R.id.ideaTvNvh);
             ideaCard = itemView.findViewById(R.id.ideaCard);
-            //ideaCard.setBackgroundColor(Color.parseColor(getRandomColor()));
-            firebaseAuth = FirebaseAuth.getInstance();
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
+            ideaCard.setBackgroundColor(Color.parseColor(MainActivity.getRandomColor()));
+            databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
+            databaseReference.keepSynced(true);
         }
     }
 
@@ -110,33 +113,15 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     }
 
     private void itemViewOnLongClick(IdeasViewHolder holder, String key) {
-        String userId = MainActivity.sharedPreferences.getString("userId", "");
-        String Name = MainActivity.sharedPreferences.getString("Name", "");
+        String userId = sharedPreferences.getString("userId", "");
         DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Ideas").child(key);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(((FragmentActivity) context), Name + " Your Selected Idea Deleted Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(((FragmentActivity) context), "selected idea deleted successfully", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-    }
-
-    private String getRandomColor() {
-        List<String> colorCode = new ArrayList<>();
-        colorCode.add("#DFFF00");
-        colorCode.add("#FFBF00");
-        colorCode.add("#FF7F50");
-        colorCode.add("#DE3163");
-        colorCode.add("#9FE2BF");
-        colorCode.add("#40E0D0");
-        colorCode.add("#6495ED");
-        colorCode.add("#CCCCFF");
-
-        Random random = new Random();
-        int number = random.nextInt(colorCode.size());
-        return colorCode.get(number);
     }
 }

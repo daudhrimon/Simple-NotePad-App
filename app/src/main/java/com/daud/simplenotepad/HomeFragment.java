@@ -456,7 +456,8 @@ public class HomeFragment extends Fragment {
         recyclerV.setLayoutManager(staggeredGridLayoutManager);
         recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
+        databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
+        databaseReference.keepSynced(true);
         storageReference = FirebaseStorage.getInstance().getReference("AllUsersImage");
         list = new ArrayList<>();
         userId = sharedPreferences.getString("userId", "");

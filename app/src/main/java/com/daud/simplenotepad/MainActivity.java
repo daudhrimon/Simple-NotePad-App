@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     public static SharedPreferences sharedPreferences;
@@ -53,5 +56,22 @@ public class MainActivity extends AppCompatActivity {
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Image", null);
         return Uri.parse(path);
+    }
+
+    // Color List for set Random Color
+    public static String getRandomColor() {
+        List<String> colorCode = new ArrayList<>();
+        colorCode.add("#DFFF00");
+        colorCode.add("#FFBF00");
+        colorCode.add("#FF7F50");
+        colorCode.add("#DE3163");
+        colorCode.add("#9FE2BF");
+        colorCode.add("#40E0D0");
+        colorCode.add("#6495ED");
+        colorCode.add("#CCCCFF");
+
+        Random random = new Random();
+        int number = random.nextInt(colorCode.size());
+        return colorCode.get(number);
     }
 }
