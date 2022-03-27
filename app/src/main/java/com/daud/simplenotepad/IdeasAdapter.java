@@ -1,6 +1,5 @@
 package com.daud.simplenotepad;
 
-import static com.daud.simplenotepad.HomeFragment.userId;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
 import android.app.AlertDialog;
@@ -20,22 +19,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHolder> {
     private Context context;
     private List<IdeasModel> list;
-    IdeasViewHolder ideasViewHolder;
+    private int requestCode;
 
-    public IdeasAdapter(Context context, List<IdeasModel> list) {
+    public IdeasAdapter(Context context, List<IdeasModel> list, int requestCode) {
         this.context = context;
         this.list = list;
+        this.requestCode = requestCode;
+        ;
     }
 
     @NonNull
@@ -50,6 +48,10 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         holder.titleTv.setText(list.get(position).getTitle());
         holder.ideaTv.setText(list.get(position).getIdea());
         String Key = list.get(position).getKey();
+
+        if (requestCode==1){
+            holder.ideaCard.setBackgroundColor(Color.parseColor(MainActivity.getRandomColor()));
+        }
 
         holder.itemView.setOnClickListener(view -> {
             itemViewOnclick(holder, position);
@@ -94,7 +96,6 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
             titleTv = itemView.findViewById(R.id.titleTvNvh);
             ideaTv = itemView.findViewById(R.id.ideaTvNvh);
             ideaCard = itemView.findViewById(R.id.ideaCard);
-            ideaCard.setBackgroundColor(Color.parseColor(MainActivity.getRandomColor()));
             databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
             databaseReference.keepSynced(true);
         }

@@ -55,6 +55,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,24 +95,24 @@ public class HomeFragment extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             List<IdeasModel> searchList = new ArrayList<>();
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+            public boolean onQueryTextSubmit(String query) { return false; }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText!=null || !newText.isEmpty()){
+
+                if (!newText.isEmpty() || !newText.equals("")){
                     searchList.clear();
                     for (int i = 0; i < list.size(); i++){
-                        if (list.get(i).getTitle().contains(newText) || list.get(i).getIdea().contains(newText)){
+                        if (list.get(i).getTitle().toLowerCase(Locale.ROOT).contains(newText)
+                                || list.get(i).getIdea().toLowerCase(Locale.ROOT).contains(newText)){
                             searchList.add(list.get(i));
                         }
                     }
-                    recyclerV.setAdapter(new IdeasAdapter(getContext(),searchList));
-                }else{
-                    recyclerV.setAdapter(new IdeasAdapter(getContext(),list));
+                    recyclerV.setAdapter(new IdeasAdapter(getContext(),searchList,0));
+                }else {
+                    recyclerV.setAdapter(new IdeasAdapter(getContext(),list, 1));
                 }
-                return true;
+                return false;
             }
         });
 
@@ -176,7 +177,7 @@ public class HomeFragment extends Fragment {
                     recyclerV.setVisibility(View.GONE);
                     emptyNotice.setVisibility(View.VISIBLE);
                 }
-                recyclerV.setAdapter(new IdeasAdapter(getContext(), list));
+                recyclerV.setAdapter(new IdeasAdapter(getContext(), list, 1));
             }
 
             @Override
