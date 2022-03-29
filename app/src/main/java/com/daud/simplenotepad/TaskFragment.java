@@ -1,10 +1,13 @@
 package com.daud.simplenotepad;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
 import static com.daud.simplenotepad.HomeFragment.databaseReference;
 import static com.daud.simplenotepad.HomeFragment.userId;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,9 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 
@@ -37,7 +38,7 @@ public class TaskFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_task, container, false);
 
         //initialization
-        initial(view);
+        initialize(view);
 
         // This Method Will Check State that this Fragment use for
         // Add idea or View And Edit Idea
@@ -47,6 +48,37 @@ public class TaskFragment extends Fragment {
 
         //save Button OnClick
         saveIBtn.setOnClickListener(view1 -> {
+            saveButtonOnClickMethod();
+        });
+
+        //backIBtn OnClick
+        backIBtn.setOnClickListener(view1 -> {
+            getParentFragmentManager().popBackStack();
+            MainActivity.hideKeyboard(getActivity());
+        });
+
+        return view;
+    }
+
+
+
+    // METHODS //
+
+    // This Method Will Check State that this Fragment use for
+    // Add idea or View And Edit Idea
+    private void checkStateAndDoCustomize() {
+        if (State.equals("Edit")) {
+            String Title = sharedPreferences.getString("Title", "");
+            String Idea = sharedPreferences.getString("Idea", "");
+            titleEt.setText(Title);
+            ideaEt.setText(Idea);
+        }
+    }
+
+
+    // This Method Will handle save Buttons OnClick
+    private void saveButtonOnClickMethod() {
+        if (checkInternet()){
             String titleIn = titleEt.getText().toString();
             String ideaIn = ideaEt.getText().toString();
             if (titleIn.isEmpty() && ideaIn.isEmpty()) {
@@ -60,27 +92,8 @@ public class TaskFragment extends Fragment {
                     pushIdeaToFirebase(titleIn, ideaIn);
                 }
             }
-        });
-
-        //backIBtn OnClick
-        backIBtn.setOnClickListener(view1 -> {
-            getParentFragmentManager().popBackStack();
-            MainActivity.hideKeyboard(getActivity());
-        });
-
-        return view;
-    }
-
-    // METHODS //
-
-    // This Method Will Check State that this Fragment use for
-    // Add idea or View And Edit Idea
-    private void checkStateAndDoCustomize() {
-        if (State.equals("Edit")) {
-            String Title = sharedPreferences.getString("Title", "");
-            String Idea = sharedPreferences.getString("Idea", "");
-            titleEt.setText(Title);
-            ideaEt.setText(Idea);
+        }else{
+            Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -131,8 +144,20 @@ public class TaskFragment extends Fragment {
     }
 
 
+    //This method will check internet connected or not
+    private boolean checkInternet(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo!=null && networkInfo.isConnected()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
     //initialization
-    private void initial(View view) {
+    private void initialize(View view) {
         titleEt = view.findViewById(R.id.titleEt);
         ideaEt = view.findViewById(R.id.ideaEt);
         backIBtn = view.findViewById(R.id.backIBtn);

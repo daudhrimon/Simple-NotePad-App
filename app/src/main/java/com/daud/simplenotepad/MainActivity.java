@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         return Uri.parse(path);
     }
 
+
     // Color List for set Random Color
     public static String getRandomColor() {
         List<String> colorCode = new ArrayList<>();

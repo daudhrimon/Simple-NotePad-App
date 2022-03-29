@@ -1,5 +1,6 @@
 package com.daud.simplenotepad;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
 import static com.daud.simplenotepad.MainActivity.editor;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
@@ -7,6 +8,8 @@ import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -239,8 +242,13 @@ public class HomeFragment extends Fragment {
 
         // AlertDialog Update Image OnClick
         updateImage.setOnClickListener(view -> {
-            // This method Will show A PopUp And Start Acton Camera Or Gallery
-            updateImageToFirebase(updateImage);
+            if (checkInternet()){
+                // This method Will show A PopUp And Start Acton Camera Or Gallery
+                updateImageToFirebase(updateImage);
+            }else {
+                Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         // AlertDialog UPDATE Name OnClick
@@ -346,28 +354,32 @@ public class HomeFragment extends Fragment {
 
         // Save Btn OnClick
         saveBtn.setOnClickListener(view1 -> {
-            String updateIn = updateEt.getText().toString();
-            if (updateIn.isEmpty()) {
-                updateEt.setError("Invalid Value");
-                updateEt.requestFocus();
-                return;
-            }
-            progress.setVisibility(View.VISIBLE);
-            DatabaseReference nameRef = databaseReference.child(userId).child("Profile").child("Name");
-            nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        progress.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), updateIn + " Your Name Changed Successfully", Toast.LENGTH_SHORT).show();
-                        hideKeyboard(getActivity());
-                        nameDialog.dismiss();
-                    } else {
-                        progress.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                    }
+            if (checkInternet()){
+                String updateIn = updateEt.getText().toString();
+                if (updateIn.isEmpty()) {
+                    updateEt.setError("Invalid Value");
+                    updateEt.requestFocus();
+                    return;
                 }
-            });
+                progress.setVisibility(View.VISIBLE);
+                DatabaseReference nameRef = databaseReference.child(userId).child("Profile").child("Name");
+                nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            progress.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), updateIn + " Your Name Changed Successfully", Toast.LENGTH_SHORT).show();
+                            hideKeyboard(getActivity());
+                            nameDialog.dismiss();
+                        } else {
+                            progress.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }else{
+                Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
+            }
         });
 
         cancelBtn.setOnClickListener(view1 -> {
@@ -444,6 +456,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
+
+    //This method will check internet connected or not
+    private boolean checkInternet(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo!=null && networkInfo.isConnected()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     // Initialization Method
     private void initialize(View view) {
