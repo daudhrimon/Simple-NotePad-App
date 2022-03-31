@@ -110,26 +110,6 @@ public class TaskFragment extends Fragment {
     }
 
 
-    // This Method Will handle save Buttons OnClick
-    private void saveButtonOnClickMethod() {
-        /*if (checkInternet()){
-            String titleIn = titleEt.getText().toString();
-            String ideaIn = ideaEt.getText().toString();
-            if (titleIn.isEmpty() && ideaIn.isEmpty()) {
-                Toast.makeText(getContext(), "You cant save a empty idea", Toast.LENGTH_SHORT).show();
-            } else {
-                if (State.equals("Edit")) {
-                    // This Method Will Update idea
-                    updateIdeaToFirebase(titleIn, ideaIn);
-                }
-            }
-        }else{
-            Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
-        }*/
-
-    }
-
-
     //This method will check internet connected or not
     private boolean checkInternet(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
@@ -149,11 +129,5 @@ public class TaskFragment extends Fragment {
         backIBtn = view.findViewById(R.id.backIBtn);
         State = sharedPreferences.getString("State", "Edit");
         IdeaKey = sharedPreferences.getString("IdeaKey","");
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        isDetached();
     }
 }

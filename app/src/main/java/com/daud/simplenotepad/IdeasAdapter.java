@@ -1,5 +1,6 @@
 package com.daud.simplenotepad;
 
+import static com.daud.simplenotepad.HomeFragment.databaseReference;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
 import android.app.AlertDialog;
@@ -49,7 +50,7 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         holder.ideaTv.setText(list.get(position).getIdea());
         String IdeaKey = list.get(position).getIdeaKey();
         // Auto Delete Empty Value //
-        if (list.get(position).getTitle().equals("")&&list.get(position).getIdea().equals("")){
+        if (list.get(position).getTitle().equals("") && list.get(position).getIdea().equals("")){
             deleteDataOnLongClick(holder,IdeaKey,"Empty Idea Discarded");
         }
         ////////////////////////////////////////////
@@ -93,22 +94,19 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     public class IdeasViewHolder extends RecyclerView.ViewHolder {
         private TextView titleTv, ideaTv;
         private LinearLayout ideaCard;
-        private DatabaseReference databaseReference;
 
         public IdeasViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTv = itemView.findViewById(R.id.titleTvNvh);
             ideaTv = itemView.findViewById(R.id.ideaTvNvh);
             ideaCard = itemView.findViewById(R.id.ideaCard);
-            databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
-            databaseReference.keepSynced(true);
         }
     }
 
     private void itemViewOnclick(IdeasViewHolder holder, int position) {
         MainActivity.editor.putString("Title", list.get(position).getTitle().toString());
         MainActivity.editor.putString("Idea", list.get(position).getIdea().toString());
-        MainActivity.editor.putString("Key", list.get(position).getIdeaKey().toString());
+        MainActivity.editor.putString("IdeaKey", list.get(position).getIdeaKey().toString());
         MainActivity.editor.putString("State", "Edit");
         MainActivity.editor.commit();
         ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
@@ -117,9 +115,9 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
                 .addToBackStack(null).commit();
     }
 
-    private void deleteDataOnLongClick(IdeasViewHolder holder, String Ideakey, String toast) {
+    private void deleteDataOnLongClick(IdeasViewHolder holder, String IdeaKey, String toast) {
         String userId = sharedPreferences.getString("userId", "");
-        DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Ideas").child(Ideakey);
+        DatabaseReference deleteRef = databaseReference.child(userId).child("Ideas").child(IdeaKey);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
