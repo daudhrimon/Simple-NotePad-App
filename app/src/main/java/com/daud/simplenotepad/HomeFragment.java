@@ -57,6 +57,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -127,10 +128,7 @@ public class HomeFragment extends Fragment {
 
         // ADD Button OnClick
         addBtn.setOnClickListener(view1 -> {
-            //This Method Will Load Add idea's Page
-            ///////////////////////////////////////
             addBtnOnclick();
-            ///////////////////////////////////////
         });
 
         // Activity Result Launcher Method
@@ -176,11 +174,12 @@ public class HomeFragment extends Fragment {
                             showAllIdeas();
                         }
                     }
+                    recyclerV.setAdapter(new IdeasAdapter(getContext(), list, 1));
                 } else {
                     recyclerV.setVisibility(View.GONE);
                     emptyNotice.setVisibility(View.VISIBLE);
                 }
-                recyclerV.setAdapter(new IdeasAdapter(getContext(), list, 1));
+
             }
 
             @Override
@@ -275,11 +274,33 @@ public class HomeFragment extends Fragment {
 
     //Plus Button OnClick //////////////////////////////////////////////////////////////////////////
     private void addBtnOnclick() {
-        editor.putString("State", "Add").commit();
+        DatabaseReference pushNoteRef = databaseReference.child(userId).child("Ideas").push();
+        String IdeaKey = pushNoteRef.getKey().toString();
+        HashMap<String, Object> noteMap = new HashMap<>();
+        noteMap.put("Title", "");
+        noteMap.put("Idea", "");
+        noteMap.put("IdeaKey", IdeaKey);
+        ///
+        editor.putString("IdeaKey",IdeaKey);
+        editor.putString("State", "Add");
+        editor.commit();
         getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
                 R.anim.fade_out,
                 R.anim.fade_in,
                 R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
+        ///
+        pushNoteRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    ////////////////////////////////////////////
+                } else {
+                    Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
     }
 
 

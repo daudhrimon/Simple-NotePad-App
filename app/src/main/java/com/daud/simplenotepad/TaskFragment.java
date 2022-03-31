@@ -13,6 +13,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +30,9 @@ import java.util.HashMap;
 
 public class TaskFragment extends Fragment {
     private TextInputEditText titleEt, ideaEt;
-    private ImageButton backIBtn, saveIBtn;
+    private ImageButton backIBtn;
     private String State;
+    private String IdeaKey;// from home fragment by sharedPref //
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,15 +49,46 @@ public class TaskFragment extends Fragment {
 
         // ON CLICKS //
 
-        //save Button OnClick
-        saveIBtn.setOnClickListener(view1 -> {
-            saveButtonOnClickMethod();
-        });
-
         //backIBtn OnClick
         backIBtn.setOnClickListener(view1 -> {
             getParentFragmentManager().popBackStack();
             MainActivity.hideKeyboard(getActivity());
+        });
+
+        titleEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String titleIn = charSequence.toString();
+                DatabaseReference titleRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Title");
+                titleRef.setValue(titleIn).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){                   }
+                    }
+                });
+            }
+            @Override
+            public void afterTextChanged(Editable editable) { }
+        });
+
+        ideaEt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+               String ideaIn = charSequence.toString();
+               DatabaseReference ideaRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Idea");
+               ideaRef.setValue(ideaIn).addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Void> task) {
+                       if (task.isSuccessful()){                   }
+                   }
+               });
+            }
+            @Override
+            public void afterTextChanged(Editable editable) { }
         });
 
         return view;
@@ -78,7 +112,7 @@ public class TaskFragment extends Fragment {
 
     // This Method Will handle save Buttons OnClick
     private void saveButtonOnClickMethod() {
-        if (checkInternet()){
+        /*if (checkInternet()){
             String titleIn = titleEt.getText().toString();
             String ideaIn = ideaEt.getText().toString();
             if (titleIn.isEmpty() && ideaIn.isEmpty()) {
@@ -87,60 +121,12 @@ public class TaskFragment extends Fragment {
                 if (State.equals("Edit")) {
                     // This Method Will Update idea
                     updateIdeaToFirebase(titleIn, ideaIn);
-                } else {
-                    // This Method Will Push New Added idea
-                    pushIdeaToFirebase(titleIn, ideaIn);
                 }
             }
         }else{
             Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
-        }
-    }
+        }*/
 
-
-    //Update Idea To Firebase Method
-    private void updateIdeaToFirebase(String titleIn, String ideaIn) {
-        String Key = sharedPreferences.getString("Key", "");
-        DatabaseReference updateNoteRef = databaseReference.child(userId).child("Ideas").child(Key);
-        HashMap<String, Object> noteMap = new HashMap<>();
-        noteMap.put("Title", titleIn);
-        noteMap.put("Idea", ideaIn);
-        noteMap.put("Key", Key);
-        updateNoteRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Your idea updated successfully", Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack();
-                    hideKeyboard(getActivity());
-                } else {
-                    Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-
-    //Push Note To Firebase Method
-    private void pushIdeaToFirebase(String titleIn, String ideaIn) {
-        DatabaseReference pushNoteRef = databaseReference.child(userId).child("Ideas").push();
-        String pushKey = pushNoteRef.getKey().toString();
-        HashMap<String, Object> noteMap = new HashMap<>();
-        noteMap.put("Title", titleIn);
-        noteMap.put("Idea", ideaIn);
-        noteMap.put("Key", pushKey);
-        pushNoteRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "Your idea Saved successfully", Toast.LENGTH_SHORT).show();
-                    getParentFragmentManager().popBackStack();
-                    hideKeyboard(getActivity());
-                } else {
-                    Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
 
@@ -161,7 +147,13 @@ public class TaskFragment extends Fragment {
         titleEt = view.findViewById(R.id.titleEt);
         ideaEt = view.findViewById(R.id.ideaEt);
         backIBtn = view.findViewById(R.id.backIBtn);
-        saveIBtn = view.findViewById(R.id.saveIBtn);
         State = sharedPreferences.getString("State", "Edit");
+        IdeaKey = sharedPreferences.getString("IdeaKey","");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        isDetached();
     }
 }

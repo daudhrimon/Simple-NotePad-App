@@ -3,15 +3,15 @@ package com.daud.simplenotepad;
 public class IdeasModel {
     String Title;
     String Idea;
-    String Key;
+    String IdeaKey;
 
     public IdeasModel() {
     }
 
-    public IdeasModel(String title, String idea, String key) {
+    public IdeasModel(String title, String idea, String ideaKey) {
         Title = title;
         Idea = idea;
-        Key = key;
+        IdeaKey = ideaKey;
     }
 
     public String getTitle() {
@@ -30,11 +30,11 @@ public class IdeasModel {
         Idea = idea;
     }
 
-    public String getKey() {
-        return Key;
+    public String getIdeaKey() {
+        return IdeaKey;
     }
 
-    public void setKey(String key) {
-        Key = key;
+    public void setIdeaKey(String ideaKey) {
+        IdeaKey = ideaKey;
     }
 }

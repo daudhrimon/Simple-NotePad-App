@@ -47,8 +47,12 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     public void onBindViewHolder(@NonNull IdeasViewHolder holder, int position) {
         holder.titleTv.setText(list.get(position).getTitle());
         holder.ideaTv.setText(list.get(position).getIdea());
-        String Key = list.get(position).getKey();
-
+        String IdeaKey = list.get(position).getIdeaKey();
+        // Auto Delete Empty Value //
+        if (list.get(position).getTitle().equals("")&&list.get(position).getIdea().equals("")){
+            deleteDataOnLongClick(holder,IdeaKey,"Empty Idea Discarded");
+        }
+        ////////////////////////////////////////////
         if (requestCode==1){
             holder.ideaCard.setBackgroundColor(Color.parseColor(MainActivity.getRandomColor()));
         }
@@ -65,7 +69,7 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    itemViewOnLongClick(holder, Key);
+                    deleteDataOnLongClick(holder, IdeaKey,"Selected Item Deleted");
                     dialogInterface.dismiss();
                 }
             });
@@ -104,7 +108,7 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     private void itemViewOnclick(IdeasViewHolder holder, int position) {
         MainActivity.editor.putString("Title", list.get(position).getTitle().toString());
         MainActivity.editor.putString("Idea", list.get(position).getIdea().toString());
-        MainActivity.editor.putString("Key", list.get(position).getKey().toString());
+        MainActivity.editor.putString("Key", list.get(position).getIdeaKey().toString());
         MainActivity.editor.putString("State", "Edit");
         MainActivity.editor.commit();
         ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
@@ -113,14 +117,14 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
                 .addToBackStack(null).commit();
     }
 
-    private void itemViewOnLongClick(IdeasViewHolder holder, String key) {
+    private void deleteDataOnLongClick(IdeasViewHolder holder, String Ideakey, String toast) {
         String userId = sharedPreferences.getString("userId", "");
-        DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Ideas").child(key);
+        DatabaseReference deleteRef = holder.databaseReference.child(userId).child("Ideas").child(Ideakey);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(((FragmentActivity) context), "selected idea deleted successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(((FragmentActivity) context), toast, Toast.LENGTH_SHORT).show();
                 }
             }
         });
