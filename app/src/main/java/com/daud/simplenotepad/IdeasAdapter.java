@@ -50,7 +50,8 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         String IdeaKey = list.get(position).getIdeaKey();
 
         // Auto Delete Empty Value //
-        if (list.get(position).getTitle().equals("") && list.get(position).getIdea().equals("")){
+        if (list.get(position).getStatus()==0 && list.get(position).getTitle().equals("")
+                && list.get(position).getIdea().equals("")){
             deleteDataOnLongClick(holder,IdeaKey,"Empty Idea Discarded");
         }
 
