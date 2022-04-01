@@ -274,12 +274,13 @@ public class HomeFragment extends Fragment {
 
     //Plus Button OnClick //////////////////////////////////////////////////////////////////////////
     private void addBtnOnclick() {
-        DatabaseReference pushNoteRef = databaseReference.child(userId).child("Ideas").push();
-        String IdeaKey = pushNoteRef.getKey().toString();
+        DatabaseReference pushIdeaRef = databaseReference.child(userId).child("Ideas").push();
+        String IdeaKey = pushIdeaRef.getKey().toString();
         HashMap<String, Object> noteMap = new HashMap<>();
         noteMap.put("Title", "");
         noteMap.put("Idea", "");
         noteMap.put("IdeaKey", IdeaKey);
+        noteMap.put("Status", 0);
         ///
         editor.putString("IdeaKey",IdeaKey);
         editor.putString("State", "Add");
@@ -289,12 +290,10 @@ public class HomeFragment extends Fragment {
                 R.anim.fade_in,
                 R.anim.slide_out_right_bottom).replace(R.id.FrameLay, new TaskFragment()).addToBackStack(null).commit();
         ///
-        pushNoteRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+        pushIdeaRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    ////////////////////////////////////////////
-                } else {
+                if (task.isSuccessful()) { } else {
                     Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }

@@ -1,17 +1,19 @@
 package com.daud.simplenotepad;
 
 public class IdeasModel {
-    String Title;
-    String Idea;
-    String IdeaKey;
+    private String Title;
+    private String Idea;
+    private String IdeaKey;
+    private int Status;
 
     public IdeasModel() {
     }
 
-    public IdeasModel(String title, String idea, String ideaKey) {
+    public IdeasModel(String title, String idea, String ideaKey, int status) {
         Title = title;
         Idea = idea;
         IdeaKey = ideaKey;
+        Status = status;
     }
 
     public String getTitle() {
@@ -36,5 +38,13 @@ public class IdeasModel {
 
     public void setIdeaKey(String ideaKey) {
         IdeaKey = ideaKey;
+    }
+
+    public int getStatus() {
+        return Status;
+    }
+
+    public void setStatus(int status) {
+        Status = status;
     }
 }

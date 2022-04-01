@@ -21,19 +21,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHolder> {
     private Context context;
     private List<IdeasModel> list;
-    private int requestCode;
+    private int colorCode;
 
-    public IdeasAdapter(Context context, List<IdeasModel> list, int requestCode) {
+    public IdeasAdapter(Context context, List<IdeasModel> list, int colorCode) {
         this.context = context;
         this.list = list;
-        this.requestCode = requestCode;
+        this.colorCode = colorCode;
         ;
     }
 
@@ -49,12 +48,22 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         holder.titleTv.setText(list.get(position).getTitle());
         holder.ideaTv.setText(list.get(position).getIdea());
         String IdeaKey = list.get(position).getIdeaKey();
+
         // Auto Delete Empty Value //
         if (list.get(position).getTitle().equals("") && list.get(position).getIdea().equals("")){
             deleteDataOnLongClick(holder,IdeaKey,"Empty Idea Discarded");
         }
-        ////////////////////////////////////////////
-        if (requestCode==1){
+
+        //Status checker
+        if (list.get(position).getStatus()==1){
+            ////////////////////////////////////
+            ////////////////////////////////////
+            /////////////////////////////////////
+            /////////////////////////////////////
+        }
+
+        // check random color Code
+        if (colorCode ==1){
             holder.ideaCard.setBackgroundColor(Color.parseColor(MainActivity.getRandomColor()));
         }
 
