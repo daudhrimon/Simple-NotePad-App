@@ -116,13 +116,16 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     }
 
     private void deleteDataOnLongClick(IdeasViewHolder holder, String IdeaKey, String toast) {
+
+        Toast.makeText(((FragmentActivity) context), toast, Toast.LENGTH_SHORT).show();
+
         String userId = sharedPreferences.getString("userId", "");
         DatabaseReference deleteRef = databaseReference.child(userId).child("Ideas").child(IdeaKey);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(((FragmentActivity) context), toast, Toast.LENGTH_SHORT).show();
+                    //////////////////////////////////////////
                 }
             }
         });

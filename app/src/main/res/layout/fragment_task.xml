@@ -92,11 +92,20 @@
                     android:layout_margin="5dp"
                     android:visibility="gone">
 
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/six_dot_menu" />
+
                     <CheckBox
                         android:id="@+id/checkBoxUn"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        android:layout_weight="1"
+                        tools:ignore="TouchTargetSizeCheck" />
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/todoUn"
@@ -105,7 +114,9 @@
                         android:layout_height="35dp"
                         android:layout_weight="8"
                         android:hint="Enter A Task"
-                        android:padding="1dp" />
+                        android:padding="1dp"
+                        android:textSize="16dp"
+                        tools:ignore="TouchTargetSizeCheck" />
 
                 </LinearLayout>
 
@@ -132,10 +143,10 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_baseline_check_box_24"
-            android:backgroundTint="#01FFFFFF"
             android:layout_marginStart="15dp"
-            />
+            android:backgroundTint="#01FFFFFF"
+            android:src="@drawable/ic_baseline_check_box_24"
+            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
     </LinearLayout>
 
