@@ -4,6 +4,7 @@ import static com.daud.simplenotepad.HomeFragment.databaseReference;
 import static com.daud.simplenotepad.HomeFragment.userId;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -49,9 +50,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
+        holder.todoTv.setText(todoList.get(position).getTodo());
         String IdeaKey = sharedPreferences.getString("IdeaKey","");
         String TodoKey = todoList.get(position).getTodoKey().toString();
-        holder.todoTv.setText(todoList.get(position).getTodo());
         int Status = todoList.get(position).getStatus();
 
         // Check To-do item checked or not
@@ -61,6 +62,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         }else if (Status==1){
             // this will be set ImageView as Checked //
             holder.statusBox.setImageResource(R.drawable.ic_baseline_check_box_24);
+            holder.todoTv.setTextColor(Color.parseColor("#C0C0C0"));
         }
 
         holder.itemView.setOnClickListener(view -> {
