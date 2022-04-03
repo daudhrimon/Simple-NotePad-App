@@ -21,6 +21,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -74,14 +76,13 @@ public class HomeFragment extends Fragment {
     private StorageReference storageReference;
     private List<IdeasModel> list;
     public static String userId;
-    private StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private GridLayoutManager gridLayoutManager;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private String ACTION;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // initialize
@@ -163,8 +164,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    emptyNotice.setVisibility(View.GONE);
-                    recyclerV.setVisibility(View.VISIBLE);
                     list.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         if (dataSnapshot.exists()) {
@@ -174,6 +173,8 @@ public class HomeFragment extends Fragment {
                             showAllIdeas();
                         }
                     }
+                    emptyNotice.setVisibility(View.GONE);
+                    recyclerV.setVisibility(View.VISIBLE);
                     recyclerV.setAdapter(new IdeasAdapter(getContext(), list, 1));
                 } else {
                     recyclerV.setVisibility(View.GONE);
@@ -281,6 +282,8 @@ public class HomeFragment extends Fragment {
         noteMap.put("Idea", "");
         noteMap.put("IdeaKey", IdeaKey);
         noteMap.put("Status", 0);
+        noteMap.put("Todo","");
+        noteMap.put("Color","");
         ///
         editor.putString("IdeaKey",IdeaKey);
         editor.putString("State", "Add");
@@ -496,9 +499,10 @@ public class HomeFragment extends Fragment {
         addBtn = view.findViewById(R.id.addBtn);
         emptyNotice = view.findViewById(R.id.emptyNotice);
         recyclerV = view.findViewById(R.id.recyclerV);
+
+        gridLayoutManager = new GridLayoutManager(getContext(),2);
         recyclerV.setHasFixedSize(true);
-        recyclerV.setLayoutManager(staggeredGridLayoutManager);
-        recyclerV.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        recyclerV.setLayoutManager(gridLayoutManager);
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
         databaseReference.keepSynced(true);

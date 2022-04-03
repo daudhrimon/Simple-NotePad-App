@@ -1,12 +1,15 @@
 package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.HomeFragment.databaseReference;
+import static com.daud.simplenotepad.HomeFragment.userId;
+import static com.daud.simplenotepad.MainActivity.editor;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +19,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHolder> {
@@ -39,7 +47,7 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     @NonNull
     @Override
     public IdeasViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_view_holder_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ideas_view_holder_layout, parent, false);
         return new IdeasViewHolder(view);
     }
 
@@ -57,10 +65,9 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
 
         //Status checker
         if (list.get(position).getStatus()==1){
-            ////////////////////////////////////
-            ////////////////////////////////////
-            /////////////////////////////////////
-            /////////////////////////////////////
+            holder.ideaTv.setVisibility(View.GONE);
+            holder.checkboxTv.setVisibility(View.VISIBLE);
+            editor.putString("State","Todo").commit();
         }
 
         // check random color Code
@@ -102,23 +109,29 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
     }
 
     public class IdeasViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleTv, ideaTv;
+        private TextView titleTv, ideaTv, checkboxTv;
         private LinearLayout ideaCard;
+
 
         public IdeasViewHolder(@NonNull View itemView) {
             super(itemView);
             titleTv = itemView.findViewById(R.id.titleTvNvh);
             ideaTv = itemView.findViewById(R.id.ideaTvNvh);
             ideaCard = itemView.findViewById(R.id.ideaCard);
+            checkboxTv = itemView.findViewById(R.id.checkboxTv);
         }
     }
 
     private void itemViewOnclick(IdeasViewHolder holder, int position) {
-        MainActivity.editor.putString("Title", list.get(position).getTitle().toString());
-        MainActivity.editor.putString("Idea", list.get(position).getIdea().toString());
-        MainActivity.editor.putString("IdeaKey", list.get(position).getIdeaKey().toString());
-        MainActivity.editor.putString("State", "Edit");
-        MainActivity.editor.commit();
+        editor.putString("Title", list.get(position).getTitle().toString());
+        editor.putString("Idea", list.get(position).getIdea().toString());
+        editor.putString("IdeaKey", list.get(position).getIdeaKey().toString());
+        editor.commit();
+        if (list.get(holder.getAdapterPosition()).getStatus()==1){
+            editor.putString("State","Todo").commit();
+        }else{
+            MainActivity.editor.putString("State", "Edit").commit();
+        }
         ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right_to_left, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_left_to_right)
                 .replace(R.id.FrameLay, new TaskFragment())

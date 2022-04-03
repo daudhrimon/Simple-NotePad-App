@@ -12,7 +12,7 @@
         android:orientation="horizontal">
 
         <ImageButton
-            android:id="@+id/backIBtn"
+            android:id="@+id/backBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -21,18 +21,6 @@
             android:backgroundTint="#01FFFFFF"
             android:src="@drawable/ic_baseline_arrow_back_24"
             tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-
-        <ImageButton
-            android:id="@+id/saveIBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="5dp"
-            android:backgroundTint="#01FFFFFF"
-            android:src="@drawable/ic_baseline_save_24"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck"
-            android:visibility="gone"/>
 
     </RelativeLayout>
 
@@ -48,7 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_below="@id/topLine"
-        android:layout_above="@id/bottomLine">
+        android:layout_above="@id/bottomLine"
+        android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -81,44 +70,28 @@
                     android:textSize="17dp"
                     android:inputType="textMultiLine"
                     android:minHeight="350dp"
-                    android:padding="0dp"
-                    android:textColor="#000000" />
+                    android:padding="0dp" />
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/todoRecycler"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal"
-                    android:weightSum="10"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:visibility="gone">
+                    android:visibility="gone"/>
 
-                    <ImageView
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:src="@drawable/six_dot_menu" />
+                <TextView
+                    android:id="@+id/itemPlus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="List item"
+                    android:drawableStart="@drawable/ic_baseline_exposure_plus_1_24"
+                    android:clickable="true"
+                    android:textSize="19dp"
+                    android:drawablePadding="5dp"
+                    android:layout_marginStart="52dp"
+                    android:visibility="gone"
+                    />
 
-                    <CheckBox
-                        android:id="@+id/checkBoxUn"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        tools:ignore="TouchTargetSizeCheck" />
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/todoUn"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="0dp"
-                        android:layout_height="35dp"
-                        android:layout_weight="8"
-                        android:hint="Enter A Task"
-                        android:padding="1dp"
-                        android:textSize="16dp"
-                        tools:ignore="TouchTargetSizeCheck" />
-
-                </LinearLayout>
 
             </LinearLayout>
 
@@ -136,17 +109,21 @@
     <LinearLayout
         android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="3dp">
 
-        <ImageButton
+        <TextView
+            android:id="@+id/ckdBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:backgroundTint="#01FFFFFF"
-            android:src="@drawable/ic_baseline_check_box_24"
-            tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+            android:text="ChekBoxes"
+            android:textSize="18dp"
+            android:drawableStart="@drawable/ic_baseline_check_box_24"
+            android:drawablePadding="5dp"
+            android:layout_marginStart="12dp"
+            />
 
     </LinearLayout>
 
