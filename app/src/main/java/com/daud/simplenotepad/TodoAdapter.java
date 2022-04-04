@@ -26,8 +26,11 @@ import android.content.Context;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TextView;;
+import android.widget.TextView;
+import android.widget.Toast;;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
@@ -99,6 +102,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         ImageView statusBoxT = alertView.findViewById(R.id.statusBoxT);
         TextInputEditText todoEtT = alertView.findViewById(R.id.todoEtT);
         MaterialButton doneBtnT = alertView.findViewById(R.id.doneBtnT);
+        MaterialButton deleteBtnT = alertView.findViewById(R.id.deleteBtnT);
         alertDialog.setView(alertView);
 
         ///
@@ -153,6 +157,15 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
         ///
         doneBtnT.setOnClickListener(view1 -> {
+            alertDialog.dismiss();
+        });
+
+        //
+        deleteBtnT.setOnClickListener(view -> {
+            DatabaseReference todoDeleteRef = databaseReference.child(userId).child("Ideas")
+                    .child(IdeaKey).child("Todo").child(TodoKey);
+            todoDeleteRef.removeValue();
+            Toast.makeText(context,"Item Deleted",Toast.LENGTH_SHORT).show();
             alertDialog.dismiss();
         });
         alertDialog.show();
