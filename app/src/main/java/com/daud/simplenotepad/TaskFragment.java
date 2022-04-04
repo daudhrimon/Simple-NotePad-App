@@ -195,17 +195,11 @@ public class TaskFragment extends Fragment {
         DatabaseReference ideaRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Idea");
         ideaRef.setValue("");
         DatabaseReference IdeaStatusRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Status");
-        IdeaStatusRef.setValue(1).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    ideaEt.setVisibility(View.GONE);
-                    checkBoxBtn.setVisibility(View.GONE);
-                    itemPlus.setVisibility(View.VISIBLE);
-                    pushEmptyItemsFirebase();
-                }
-            }
-        });
+        IdeaStatusRef.setValue(1);
+        ideaEt.setVisibility(View.GONE);
+        checkBoxBtn.setVisibility(View.GONE);
+        itemPlus.setVisibility(View.VISIBLE);
+        pushEmptyItemsFirebase();
     }
 
 
@@ -261,7 +255,7 @@ public class TaskFragment extends Fragment {
         titleEt = view.findViewById(R.id.titleEt);
         ideaEt = view.findViewById(R.id.ideaEt);
         backBtn = view.findViewById(R.id.backBtn);
-        checkBoxBtn = view.findViewById(R.id.ckdBtn);
+        checkBoxBtn = view.findViewById(R.id.checkBoxBtn);
         itemPlus = view.findViewById(R.id.itemPlus);
         colorPicker = view.findViewById(R.id.colorPicker);
         todoList = new ArrayList<>();

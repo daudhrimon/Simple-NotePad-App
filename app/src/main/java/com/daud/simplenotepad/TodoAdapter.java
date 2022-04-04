@@ -2,8 +2,10 @@ package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.HomeFragment.databaseReference;
 import static com.daud.simplenotepad.HomeFragment.userId;
+import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -36,7 +38,6 @@ import java.util.List;
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
     private Context context;
     private List<TodoModel> todoList;
-    private TodoViewHolder holder;
 
     public TodoAdapter(Context context, List<TodoModel> todoList) {
         this.context = context;
