@@ -1,7 +1,6 @@
 package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.HomeFragment.databaseReference;
-import static com.daud.simplenotepad.HomeFragment.userId;
 import static com.daud.simplenotepad.MainActivity.editor;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
@@ -9,7 +8,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,29 +17,23 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHolder> {
     private Context context;
     private List<IdeasModel> list;
-    private int colorCode;
+    private int colorState;
 
-    public IdeasAdapter(Context context, List<IdeasModel> list, int colorCode) {
+    public IdeasAdapter(Context context, List<IdeasModel> list, int colorState) {
         this.context = context;
         this.list = list;
-        this.colorCode = colorCode;
-        ;
+        this.colorState = colorState;
     }
 
     @NonNull
@@ -58,21 +50,21 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         String IdeaKey = list.get(position).getIdeaKey();
 
         // Auto Delete Empty Value //
-        if (list.get(position).getStatus()==0 && list.get(position).getTitle().equals("")
-                && list.get(position).getIdea().equals("")){
-            deleteDataOnLongClick(holder,IdeaKey,"Empty Idea Discarded");
+        if (list.get(position).getStatus() == 0 && list.get(position).getTitle().equals("")
+                && list.get(position).getIdea().equals("")) {
+            deleteDataOnLongClick(holder, IdeaKey, "Empty Idea Discarded");
         }
 
         //Status checker
-        if (list.get(position).getStatus()==1){
+        if (list.get(position).getStatus() == 1) {
             holder.ideaTv.setVisibility(View.GONE);
             holder.checkboxTv.setVisibility(View.VISIBLE);
-            editor.putString("State","Todo").commit();
+            editor.putString("State", "Todo").commit();
         }
 
         // check random color Code
-        if (colorCode ==1){
-            holder.ideaCard.setBackgroundColor(Color.parseColor(MainActivity.getRandomColor()));
+        if (colorState == 1) {
+            holder.ideaCard.setBackgroundColor(list.get(position).getColor());
         }
 
         holder.itemView.setOnClickListener(view -> {
@@ -81,13 +73,14 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
 
         holder.itemView.setOnLongClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setIcon(R.drawable.delete_icon);
             builder.setTitle("Delete Alert !");
-            builder.setMessage("Do You Want To Delete This Idea ?");
+            builder.setMessage(" Are you sure ? \n That you want to DELETE this idea !");
             builder.setCancelable(false);
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    deleteDataOnLongClick(holder, IdeaKey,"Selected Item Deleted");
+                    deleteDataOnLongClick(holder, IdeaKey, "Selected Item Deleted");
                     dialogInterface.dismiss();
                 }
             });
@@ -126,10 +119,11 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         editor.putString("Title", list.get(position).getTitle().toString());
         editor.putString("Idea", list.get(position).getIdea().toString());
         editor.putString("IdeaKey", list.get(position).getIdeaKey().toString());
+        editor.putInt("Color", list.get(position).getColor());
         editor.commit();
-        if (list.get(holder.getAdapterPosition()).getStatus()==1){
-            editor.putString("State","Todo").commit();
-        }else{
+        if (list.get(holder.getAdapterPosition()).getStatus() == 1) {
+            editor.putString("State", "Todo").commit();
+        } else {
             MainActivity.editor.putString("State", "Edit").commit();
         }
         ((FragmentActivity) context).getSupportFragmentManager().beginTransaction()

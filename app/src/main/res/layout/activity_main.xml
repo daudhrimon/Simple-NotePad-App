@@ -13,5 +13,4 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true" />
 
-
 </RelativeLayout>

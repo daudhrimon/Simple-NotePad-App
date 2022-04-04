@@ -27,12 +27,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/profileIcon"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
-                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/profileIcon"
                 app:iconifiedByDefault="false"
-                app:queryHint="Search your ideas"/>
+                app:queryHint="Search your ideas" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profileIcon"

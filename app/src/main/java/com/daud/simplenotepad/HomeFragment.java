@@ -8,6 +8,7 @@ import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -76,7 +77,7 @@ public class HomeFragment extends Fragment {
     private StorageReference storageReference;
     private List<IdeasModel> list;
     public static String userId;
-    private GridLayoutManager gridLayoutManager;
+    private StaggeredGridLayoutManager layoutManager;
     private ActivityResultLauncher<Intent> activityResultLauncher;
     private String ACTION;
 
@@ -98,25 +99,15 @@ public class HomeFragment extends Fragment {
 
         //SearchView OnTextChanged or OnQueryTextListener //
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            List<IdeasModel> searchList = new ArrayList<>();
             @Override
-            public boolean onQueryTextSubmit(String query) { return false; }
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                if (!newText.isEmpty() || !newText.equals("")){
-                    searchList.clear();
-                    for (int i = 0; i < list.size(); i++){
-                        if (list.get(i).getTitle().toLowerCase(Locale.ROOT).contains(newText)
-                                || list.get(i).getIdea().toLowerCase(Locale.ROOT).contains(newText)){
-                            searchList.add(list.get(i));
-                        }
-                    }
-                    recyclerV.setAdapter(new IdeasAdapter(getContext(),searchList,0));
-                }else {
-                    recyclerV.setAdapter(new IdeasAdapter(getContext(),list, 1));
-                }
+                // search view method
+                searchViewMethod(newText);
                 return false;
             }
         });
@@ -156,6 +147,24 @@ public class HomeFragment extends Fragment {
     }
 
     // METHODS
+
+    // search view method
+    private void searchViewMethod(String newText) {
+        List<IdeasModel> searchList = new ArrayList<>();
+        if (!newText.isEmpty() || !newText.equals("")) {
+            searchList.clear();
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).getTitle().toLowerCase(Locale.ROOT).contains(newText)
+                        || list.get(i).getIdea().toLowerCase(Locale.ROOT).contains(newText)) {
+                    searchList.add(list.get(i));
+                }
+            }
+            recyclerV.setAdapter(new IdeasAdapter(getContext(), searchList, 0));
+        } else {
+            recyclerV.setAdapter(new IdeasAdapter(getContext(), list, 1));
+        }
+    }
+
 
     // Show All Ideas From Firebase On HOME with RecyclerView //////////////////////////////////////
     private void showAllIdeas() {
@@ -213,8 +222,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    // ON CLICK METHODS ////////////////////////////////////////////////////////////////////////////
-
 
     // Profile icon ToolBar CircleImageView OnClick // Profile AlertDialog //
     private void profileIconOnClick() {
@@ -242,11 +249,11 @@ public class HomeFragment extends Fragment {
 
         // AlertDialog Update Image OnClick
         updateImage.setOnClickListener(view -> {
-            if (checkInternet()){
+            if (checkInternet()) {
                 // This method Will show A PopUp And Start Acton Camera Or Gallery
                 updateImageToFirebase(updateImage);
-            }else {
-                Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Please Check INTERNET_CONNECTION First", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -282,10 +289,10 @@ public class HomeFragment extends Fragment {
         noteMap.put("Idea", "");
         noteMap.put("IdeaKey", IdeaKey);
         noteMap.put("Status", 0);
-        noteMap.put("Todo","");
-        noteMap.put("Color","");
+        noteMap.put("Todo", "");
+        noteMap.put("Color", Color.parseColor("#01FFFFFF"));
         ///
-        editor.putString("IdeaKey",IdeaKey);
+        editor.putString("IdeaKey", IdeaKey);
         editor.putString("State", "Add");
         editor.commit();
         getParentFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_right_bottom,
@@ -296,7 +303,8 @@ public class HomeFragment extends Fragment {
         pushIdeaRef.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) { } else {
+                if (task.isSuccessful()) {
+                } else {
                     Toast.makeText(getContext(), "" + task.getException().getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -377,7 +385,7 @@ public class HomeFragment extends Fragment {
 
         // Save Btn OnClick
         saveBtn.setOnClickListener(view1 -> {
-            if (checkInternet()){
+            if (checkInternet()) {
                 String updateIn = updateEt.getText().toString();
                 if (updateIn.isEmpty()) {
                     updateEt.setError("Invalid Value");
@@ -400,8 +408,8 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 });
-            }else{
-                Toast.makeText(getContext(),"Please Check INTERNET_CONNECTION First",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Please Check INTERNET_CONNECTION First", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -417,8 +425,10 @@ public class HomeFragment extends Fragment {
     private void signOutBtnOnClickFromDialog(AlertDialog profileDialog) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setCancelable(false);
+        builder.setIcon(R.drawable.logout_icon);
         builder.setTitle("SignOut Alert !");
-        builder.setMessage("Do You Want To SignOut ?");
+        builder.setMessage(" Are you sure ? \n That you want to SignOut !");
+        builder.setCancelable(false);
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -481,12 +491,12 @@ public class HomeFragment extends Fragment {
 
 
     //This method will check internet connected or not
-    private boolean checkInternet(){
+    private boolean checkInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getActivity().getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo!=null && networkInfo.isConnected()){
+        if (networkInfo != null && networkInfo.isConnected()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -499,10 +509,9 @@ public class HomeFragment extends Fragment {
         addBtn = view.findViewById(R.id.addBtn);
         emptyNotice = view.findViewById(R.id.emptyNotice);
         recyclerV = view.findViewById(R.id.recyclerV);
-
-        gridLayoutManager = new GridLayoutManager(getContext(),2);
         recyclerV.setHasFixedSize(true);
-        recyclerV.setLayoutManager(gridLayoutManager);
+        layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        recyclerV.setLayoutManager(layoutManager);
         firebaseAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
         databaseReference.keepSynced(true);

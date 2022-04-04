@@ -26,8 +26,8 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
                 android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp"
                 android:layout_weight="1" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -52,14 +52,13 @@
 
     </androidx.cardview.widget.CardView>
 
-
     <com.google.android.material.button.MaterialButton
         android:id="@+id/doneBtnT"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="#01FFFFFF"
         android:layout_margin="07dp"
-        android:text="Done"/>
+        android:backgroundTint="#01FFFFFF"
+        android:text="Done" />
 
 </LinearLayout>
