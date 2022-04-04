@@ -7,6 +7,7 @@ import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.widget.TextViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +37,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     private Context context;
     private List<TodoModel> todoList;
     private TodoViewHolder holder;
-    private int position;
 
     public TodoAdapter(Context context, List<TodoModel> todoList) {
         this.context = context;
@@ -63,11 +64,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         } else if (Status == 1) {
             // this will be set ImageView as Checked //
             holder.statusBox.setImageResource(R.drawable.ic_baseline_check_box_24);
-            holder.todoTv.setTextColor(Color.parseColor("#C0C0C0"));
         }
 
         holder.itemView.setOnClickListener(view -> {
-            itemViewOnClickMethod(Status, IdeaKey, TodoKey);
+            itemViewOnClickMethod(Status, todoList.get(position).getTodo(), IdeaKey, TodoKey);
 
         });
     }
@@ -90,15 +90,17 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
 
     // items OnClick AlertDialog for set to-do items info
-    private void itemViewOnClickMethod(int Status, String IdeaKey, String TodoKey) {
+    private void itemViewOnClickMethod(int Status, String Todo, String IdeaKey, String TodoKey) {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         View alertView = LayoutInflater.from(context).inflate(R.layout.add_or_edit_todo, null);
 
+        ///
         ImageView statusBoxT = alertView.findViewById(R.id.statusBoxT);
         TextInputEditText todoEtT = alertView.findViewById(R.id.todoEtT);
         MaterialButton doneBtnT = alertView.findViewById(R.id.doneBtnT);
         alertDialog.setView(alertView);
 
+        ///
         if (Status == 0) {
             // this will be set ImageView as UnChecked //
             statusBoxT.setImageResource(R.drawable.unchecked_checkbox);
@@ -107,6 +109,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             statusBoxT.setImageResource(R.drawable.ic_baseline_check_box_24);
         }
 
+        ///
+        todoEtT.setText(Todo);
+
+        ///
         todoEtT.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -125,6 +131,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             }
         });
 
+        ///
         statusBoxT.setOnClickListener(view1 -> {
             if (Status == 0) {
                 // this will be set ImageView as Checked //
@@ -143,6 +150,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             }
         });
 
+        ///
         doneBtnT.setOnClickListener(view1 -> {
             alertDialog.dismiss();
         });
