@@ -132,7 +132,7 @@ public class SignInFragment extends Fragment {
 
         //yesBtn OnClick
         yesBtn.setOnClickListener(view2 -> {
-            editor.putString("SignIn", "true");
+            editor.putString("SignIn", "isSignIn");
             editor.commit();
             getParentFragmentManager()
                     .beginTransaction()

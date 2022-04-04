@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         String SignIn = sharedPreferences.getString("SignIn", "");
-        if (SignIn.equals("true")) {
+        if (SignIn.equals("isSignIn")) {
             getSupportFragmentManager().beginTransaction().replace(R.id.FrameLay, new HomeFragment()).commit();
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.FrameLay, new SignInFragment()).commit();

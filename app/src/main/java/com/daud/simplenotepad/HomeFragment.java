@@ -5,8 +5,11 @@ import static com.daud.simplenotepad.MainActivity.editor;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -21,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -146,7 +150,9 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+
     // METHODS
+
 
     // search view method
     private void searchViewMethod(String newText) {
@@ -270,7 +276,6 @@ public class HomeFragment extends Fragment {
             signOutBtnOnClickFromDialog(profileDialog);
         });
 
-        profileDialog.setCancelable(false);
         profileDialog.show();
         Window window = profileDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -353,14 +358,27 @@ public class HomeFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.camera:
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        activityResultLauncher.launch(intent);
-                        ACTION = "camera";
+                        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
+                                != PackageManager.PERMISSION_GRANTED){
+                            Toast.makeText(getContext(),"Camera permission not Granted",Toast.LENGTH_SHORT).show();
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, 2);
+                        }else{
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            activityResultLauncher.launch(intent);
+                            ACTION = "camera";
+                        }
                         break;
                     case R.id.gallery:
-                        Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
-                        activityResultLauncher.launch(intent1);
-                        ACTION = "gallery";
+                        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED){
+                            Toast.makeText(getContext(),"Files & Media permission not Granted",Toast.LENGTH_SHORT).show();
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                                    ,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 22);
+                        }else{
+                            Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT).setType("image/*");
+                            activityResultLauncher.launch(intent1);
+                            ACTION = "gallery";
+                        }
                         break;
                 }
                 return false;
