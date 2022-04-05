@@ -1,6 +1,7 @@
 package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.MainActivity.editor;
+import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 
 import android.os.Bundle;
 
@@ -68,6 +69,7 @@ public class SignInFragment extends Fragment {
 
         // signUpBtn OnClick //
         signUpBtn.setOnClickListener(view1 -> {
+            hideKeyboard(getActivity());
             getParentFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right_to_left, R.anim.fade_out,
                             R.anim.fade_in,

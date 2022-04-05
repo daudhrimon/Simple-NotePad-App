@@ -31,7 +31,6 @@
                 android:layout_marginTop="3dp"
                 android:layout_marginBottom="3dp"
                 android:layout_toStartOf="@+id/profileIcon"
-                app:iconifiedByDefault="false"
                 app:queryHint="Search your ideas" />
 
             <de.hdodenhof.circleimageview.CircleImageView
