@@ -165,8 +165,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             DatabaseReference todoDeleteRef = databaseReference.child(userId).child("Ideas")
                     .child(IdeaKey).child("Todo").child(TodoKey);
             todoDeleteRef.removeValue();
-            Toast.makeText(context,"Item Deleted",Toast.LENGTH_SHORT).show();
             alertDialog.dismiss();
+            Toast.makeText(context,"Item Deleted",Toast.LENGTH_SHORT).show();
         });
         alertDialog.show();
     }
