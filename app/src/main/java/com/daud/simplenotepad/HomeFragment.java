@@ -93,6 +93,9 @@ public class HomeFragment extends Fragment {
         // initialize
         initialize(view);
 
+        searchView .setIconified(false);
+        searchView .clearFocus();
+
         // Show All Ideas From Firebase On HOME with RecyclerView
         showAllIdeas();
 
