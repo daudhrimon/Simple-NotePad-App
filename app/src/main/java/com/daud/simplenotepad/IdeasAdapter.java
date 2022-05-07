@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -137,7 +138,8 @@ public class IdeasAdapter extends RecyclerView.Adapter<IdeasAdapter.IdeasViewHol
         Toast.makeText(((FragmentActivity) context), toast, Toast.LENGTH_SHORT).show();
 
         String userId = sharedPreferences.getString("userId", "");
-        DatabaseReference deleteRef = databaseReference.child(userId).child("Ideas").child(IdeaKey);
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(userId);
+        DatabaseReference deleteRef = databaseReference.child("Ideas").child(IdeaKey);
         deleteRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

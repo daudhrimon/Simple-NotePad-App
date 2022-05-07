@@ -1,7 +1,6 @@
 package com.daud.simplenotepad;
 
 import static com.daud.simplenotepad.HomeFragment.databaseReference;
-import static com.daud.simplenotepad.HomeFragment.userId;
 import static com.daud.simplenotepad.MainActivity.hideKeyboard;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
@@ -126,7 +125,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String todoIn = charSequence.toString();
-                DatabaseReference todoInRef = databaseReference.child(userId).child("Ideas")
+                DatabaseReference todoInRef = databaseReference.child("Ideas")
                         .child(IdeaKey).child("Todo").child(TodoKey).child("Todo");
                 todoInRef.setValue(todoIn);
             }
@@ -142,14 +141,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
                 // this will be set ImageView as Checked //
                 statusBoxT.setImageResource(R.drawable.ic_baseline_check_box_24);
                 // change status to firebase //
-                DatabaseReference todoInRef = databaseReference.child(userId).child("Ideas")
+                DatabaseReference todoInRef = databaseReference.child("Ideas")
                         .child(IdeaKey).child("Todo").child(TodoKey).child("Status");
                 todoInRef.setValue(1);
             } else if (Status == 1) {
                 // this will be set ImageView as UnChecked //
                 statusBoxT.setImageResource(R.drawable.unchecked_checkbox);
                 // change status to firebase //
-                DatabaseReference todoInRef = databaseReference.child(userId).child("Ideas")
+                DatabaseReference todoInRef = databaseReference.child("Ideas")
                         .child(IdeaKey).child("Todo").child(TodoKey).child("Status");
                 todoInRef.setValue(0);
             }
@@ -162,7 +161,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
         //
         deleteBtnT.setOnClickListener(view -> {
-            DatabaseReference todoDeleteRef = databaseReference.child(userId).child("Ideas")
+            DatabaseReference todoDeleteRef = databaseReference.child("Ideas")
                     .child(IdeaKey).child("Todo").child(TodoKey);
             todoDeleteRef.removeValue();
             alertDialog.dismiss();

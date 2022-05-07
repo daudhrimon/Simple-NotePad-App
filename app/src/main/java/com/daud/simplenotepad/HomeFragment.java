@@ -110,7 +110,6 @@ public class HomeFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 // search view method
@@ -177,7 +176,7 @@ public class HomeFragment extends Fragment {
 
     // Show All Ideas From Firebase On HOME with RecyclerView //////////////////////////////////////
     private void showAllIdeas() {
-        DatabaseReference dataRef = databaseReference.child(userId).child("Ideas");
+        DatabaseReference dataRef = databaseReference.child("Ideas");
         dataRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -211,7 +210,7 @@ public class HomeFragment extends Fragment {
 
     // get ToolBars Profile Icon Image from Firebase ///////////////////////////////////////////////
     private void getProfileIconImage() {
-        DatabaseReference profileIconRef = databaseReference.child(userId).child("Profile").child("Image");
+        DatabaseReference profileIconRef = databaseReference.child("Profile").child("Image");
         profileIconRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -290,7 +289,7 @@ public class HomeFragment extends Fragment {
 
     //Plus Button OnClick //////////////////////////////////////////////////////////////////////////
     private void addBtnOnclick() {
-        DatabaseReference pushIdeaRef = databaseReference.child(userId).child("Ideas").push();
+        DatabaseReference pushIdeaRef = databaseReference.child("Ideas").push();
         String IdeaKey = pushIdeaRef.getKey().toString();
         HashMap<String, Object> noteMap = new HashMap<>();
         noteMap.put("Title", "");
@@ -324,7 +323,7 @@ public class HomeFragment extends Fragment {
 
     // Profile AlertDialog // This Method Will Get User PROFILE data FROM FIREBASE
     private void getProfileData(TextView nameTv, TextView emailTv, CircleImageView profileCiv) {
-        DatabaseReference profileRef = databaseReference.child(userId).child("Profile");
+        DatabaseReference profileRef = databaseReference.child("Profile");
         profileRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -414,7 +413,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 progress.setVisibility(View.VISIBLE);
-                DatabaseReference nameRef = databaseReference.child(userId).child("Profile").child("Name");
+                DatabaseReference nameRef = databaseReference.child("Profile").child("Name");
                 nameRef.setValue(updateIn).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -475,7 +474,7 @@ public class HomeFragment extends Fragment {
 
     // User's Selected IMAGE Upload To Firebase
     private void uploadImageFirebaseStorage(Uri imgUri) {
-        StorageReference imageRef = storageReference.child(userId);
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference(userId);
         imageRef.putFile(imgUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -499,7 +498,7 @@ public class HomeFragment extends Fragment {
 
     //Image Downloadable Link Upload to Firebase REALTIME DATABASE Method
     private void uploadImageURLFirebaseDatabase(String imgURL) {
-        DatabaseReference imageURLRef = databaseReference.child(userId).child("Profile").child("Image");
+        DatabaseReference imageURLRef = databaseReference.child("Profile").child("Image");
         imageURLRef.setValue(imgURL).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -529,15 +528,15 @@ public class HomeFragment extends Fragment {
         recyclerV = view.findViewById(R.id.recyclerV);
         addBtn = view.findViewById(R.id.addBtn);
         emptyNotice = view.findViewById(R.id.emptyNotice);
+        userId = sharedPreferences.getString("userId", "");
         recyclerV = view.findViewById(R.id.recyclerV);
         recyclerV.setHasFixedSize(true);
         layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerV.setLayoutManager(layoutManager);
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference("AllUsersIdea");
+        databaseReference = FirebaseDatabase.getInstance().getReference(userId);
         databaseReference.keepSynced(true);
-        storageReference = FirebaseStorage.getInstance().getReference("AllUsersImage");
+        storageReference = FirebaseStorage.getInstance().getReference(userId);
         list = new ArrayList<>();
-        userId = sharedPreferences.getString("userId", "");
     }
 }

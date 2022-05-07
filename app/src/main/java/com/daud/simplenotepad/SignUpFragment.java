@@ -27,7 +27,6 @@ public class SignUpFragment extends Fragment {
     private MaterialButton signUpnBt, signInBtn;
     private ProgressBar progress;
     public FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,7 +85,8 @@ public class SignUpFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String userId = firebaseAuth.getCurrentUser().getUid();
-                    DatabaseReference profileRef = databaseReference.child("AllUsersIdea").child(userId).child("Profile");
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(userId);
+                    DatabaseReference profileRef = databaseReference.child("Profile");
                     HashMap<String, Object> profileMAp = new HashMap<>();
                     profileMAp.put("Name", nameIn);
                     profileMAp.put("Email", emailIn);
@@ -125,6 +125,5 @@ public class SignUpFragment extends Fragment {
         signInBtn = view.findViewById(R.id.signInBtnSup);
         progress = view.findViewById(R.id.progressSup);
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 }

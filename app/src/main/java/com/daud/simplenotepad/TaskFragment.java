@@ -2,7 +2,6 @@ package com.daud.simplenotepad;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
 import static com.daud.simplenotepad.HomeFragment.databaseReference;
-import static com.daud.simplenotepad.HomeFragment.userId;
 import static com.daud.simplenotepad.MainActivity.sharedPreferences;
 
 import android.net.ConnectivityManager;
@@ -86,7 +85,7 @@ public class TaskFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String titleIn = charSequence.toString();
-                DatabaseReference titleRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Title");
+                DatabaseReference titleRef = databaseReference.child("Ideas").child(IdeaKey).child("Title");
                 titleRef.setValue(titleIn);
             }
 
@@ -104,7 +103,7 @@ public class TaskFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String ideaIn = charSequence.toString();
-                DatabaseReference ideaRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Idea");
+                DatabaseReference ideaRef = databaseReference.child("Ideas").child(IdeaKey).child("Idea");
                 ideaRef.setValue(ideaIn);
             }
 
@@ -145,7 +144,7 @@ public class TaskFragment extends Fragment {
                     @Override
                     public void onColorSelected(int color, int position) {
                         fullScreen.setBackgroundColor(color);
-                        DatabaseReference colorRef = databaseReference.child(userId)
+                        DatabaseReference colorRef = databaseReference
                                 .child("Ideas").child(IdeaKey).child("Color");
                         colorRef.setValue(color);
                     }
@@ -161,7 +160,7 @@ public class TaskFragment extends Fragment {
 
     // get all To-do data //
     private void getTodoData() {
-        DatabaseReference listRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Todo");
+        DatabaseReference listRef = databaseReference.child("Ideas").child(IdeaKey).child("Todo");
         listRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -192,9 +191,9 @@ public class TaskFragment extends Fragment {
     // Enable checkbox button Onclick and set status to firebase that, this is a to-do list
     //and will delete idea
     private void checkBoxBtnOnClick() {
-        DatabaseReference ideaRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Idea");
+        DatabaseReference ideaRef = databaseReference.child("Ideas").child(IdeaKey).child("Idea");
         ideaRef.setValue("");
-        DatabaseReference IdeaStatusRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Status");
+        DatabaseReference IdeaStatusRef = databaseReference.child("Ideas").child(IdeaKey).child("Status");
         IdeaStatusRef.setValue(1);
         ideaEt.setVisibility(View.GONE);
         checkBoxBtn.setVisibility(View.GONE);
@@ -205,7 +204,7 @@ public class TaskFragment extends Fragment {
 
     //push Empty To-do Item To Firebase
     public void pushEmptyItemsFirebase() {
-        DatabaseReference emptyListItemRef = databaseReference.child(userId).child("Ideas").child(IdeaKey).child("Todo").push();
+        DatabaseReference emptyListItemRef = databaseReference.child("Ideas").child(IdeaKey).child("Todo").push();
         TodoKey = emptyListItemRef.getKey().toString();
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("Todo", "");

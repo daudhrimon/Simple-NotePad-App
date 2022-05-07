@@ -32,7 +32,6 @@ public class SignInFragment extends Fragment {
     private TextInputEditText emailEt, passwordEt;
     private MaterialButton signInBtn, signUpBtn;
     private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
     private ProgressBar progress;
     private String userName = "User";
 
@@ -89,7 +88,8 @@ public class SignInFragment extends Fragment {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     String userId = firebaseAuth.getCurrentUser().getUid();
-                    DatabaseReference dataRef = databaseReference.child(userId).child("Profile").child("Name");
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference(userId);
+                    DatabaseReference dataRef = databaseReference.child("Profile").child("Name");
                     dataRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -167,6 +167,5 @@ public class SignInFragment extends Fragment {
         signInBtn = view.findViewById(R.id.signInBtn);
         progress = view.findViewById(R.id.progressSin);
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("AllUsersIdea");
     }
 }
