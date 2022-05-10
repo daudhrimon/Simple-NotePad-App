@@ -139,7 +139,7 @@
                 android:textAllCaps="false"
                 android:textColor="#91000000"
                 android:textSize="18dp"
-                app:backgroundTint="#FFCDD2" />
+                app:backgroundTint="@color/MyColor" />
 
             <LinearLayout
                 android:layout_width="match_parent"
